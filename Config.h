@@ -10,7 +10,7 @@
 #define CONFIG_H_
 
 /***** Battery meter settings *****/
-#define BATTERY_CHECK // comment to disable
+//#define BATTERY_CHECK // comment to disable
 #define BATTERY_FACTOR 5 // Callibration value to compensate for component variation
 #define BATTERY_READPIN 17 //A3 - read battery level 100kohm from GND, 470kohm from Bat+
 #define LOW_BATTERY 3.3 // low voltage for battery, a 5v Arduino or DIYino requires 3.3v 
@@ -57,8 +57,8 @@
  * blocks from compile
  *************************************/
 //#define LEDSTRINGS
-#define STAR_LED
-//#define PIXELBLADE
+//#define STAR_LED
+#define PIXELBLADE
 
 /************************************/
 /*
@@ -100,11 +100,11 @@
 /************************************/
 
 
-//#define SINGLEBUTTON
+#define SINGLEBUTTON
 
 #if defined PIXELBLADE
 // How many leds in one strip?
-#define NUMPIXELS 120  // can go up to 120, could lead to memory problems if further increased
+#define NUMPIXELS 100  // can go up to 120, could lead to memory problems if further increased
 
 #ifdef CROSSGUARDSABER
 // define how many pixels are used for the crossguard and how many for the main blade
@@ -115,7 +115,7 @@
 //#define FIREBLADE
 
 // Number of color defined
-//#define COLORS 14
+#define COLORS 14
 static const uint8_t rgbFactor = 255;
 
 // For led chips like NEOPIXELs, which have a data line, ground, and power, you just
@@ -142,7 +142,7 @@ static const uint8_t rgbFactor = 100;
  * Range : 6<->600
  * Default: 48
  */
-//#define COLORS		 		14
+#define COLORS		 		14
 #endif
 /************************************/ // BLADE TYPE
 
@@ -160,7 +160,7 @@ static const uint8_t rgbFactor = 100;
  * BE VERY CAREFULL WITH THIS ONE OR 
  * YOU'LL BURN YOUR BLADE'S LED 
  ************************************/
-#define MAX_BRIGHTNESS		200
+#define MAX_BRIGHTNESS		50
 
 // How long do the light effect last for the different FX's
 #define CLASH_FX_DURATION 200
@@ -202,9 +202,9 @@ static const uint8_t rgbFactor = 100;
  *  
  */
 
-#define DIYINO_PRIME
+//#define DIYINO_PRIME
 //#define DIYINO_STARTDUST
-//#define ARDUINO_HOMEBREW
+#define ARDUINO_HOMEBREW
 
 /* DEEP_SLEEP
  * If you want to enable/disable
@@ -369,9 +369,9 @@ static const uint8_t rgbFactor = 100;
  */
 #define LS_SERIAL  //enable serial communication using Wire library
 #if defined LS_SERIAL
-//#define LS_FSM
-//#define LS_INFO
-//#define LS_DEBUG
+#define LS_FSM
+#define LS_INFO
+#define LS_DEBUG
 #endif
 
 #if defined LS_DEBUG
