@@ -590,6 +590,11 @@ public:
 		setSendBuffer(STOP);
 		send();
 	}
+	inline void sleep() {
+		setSendBuffer(STANDBY);
+		send();
+	}
+
 	inline uint8_t countTrackInDir(uint8_t folder) {
 		setSendBuffer(MP3_FOLDER);
 		send();
