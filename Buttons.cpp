@@ -40,13 +40,13 @@ extern uint8_t ledPins[];
 #endif
 #if defined STAR_LED
 extern uint8_t ledPins[];
-extern cRGB currentColor;
+extern CRGB currentColor;
 //extern uint8_t currentColor[4]; //0:Red 1:Green 2:Blue 3:ColorID
 #endif
 #if defined PIXELBLADE
 extern uint8_t ledPins[];
-extern cRGB color;
-extern cRGB currentColor;
+extern CRGB color;
+extern CRGB currentColor;
 #endif
 extern uint8_t blaster;
 extern void HumRelaunch();
@@ -83,9 +83,9 @@ extern struct StoreStruct {
     uint8_t clashColor;//colorID
     uint8_t blasterboltColor;//colorID
   #else
-    cRGB mainColor;
-    cRGB clashColor;
-    cRGB blasterboltColor;
+    CRGB mainColor;
+    CRGB clashColor;
+    CRGB blasterboltColor;
   #endif
   }sndProfile[SOUNDFONT_QUANTITY + 2];
 }storage;
@@ -104,9 +104,9 @@ extern struct StoreStruct {
     uint8_t clashColor;//colorID
     uint8_t blasterboltColor;//colorID
   #else
-    cRGB mainColor;
-    cRGB clashColor;
-    cRGB blasterboltColor;
+    CRGB mainColor;
+    CRGB clashColor;
+    CRGB blasterboltColor;
   #endif
   }sndProfile[SOUNDFONT_QUANTITY + 2];
 }storage;
@@ -126,13 +126,13 @@ void mainClick() {
       ActionModeSubStates=AS_HUM;
       #if defined LS_BUTTON_DEBUG
             Serial.println(F("End clash triggered lockup (either pre or active phase)"));
-      #endif  
+      #endif
     }
     else {
       lockuponclash=true;
 #if defined LS_BUTTON_DEBUG
       Serial.println(F("Start clash triggered lockup (either pre or active phase)"));
-#endif 
+#endif
     }
 	}
 	else if (SaberState==S_CONFIG) {
@@ -144,7 +144,7 @@ void mainClick() {
           SinglePlay_Sound(1);
           delay(500);
           SinglePlay_Sound(1);
-          delay(500);    
+          delay(500);
           SinglePlay_Sound(1);
           delay(500);
     }
@@ -158,7 +158,7 @@ void mainClick() {
       Set_Volume();
       #if defined LS_INFO
               Serial.println(storage.volume);
-      #endif      
+      #endif
     }
     else if (ConfigModeSubStates == CS_SOUNDFONT) {
       play = false;
@@ -181,7 +181,7 @@ void mainClick() {
       delay(150);
       #if defined LS_INFO
               Serial.println(soundFont.getID());
-      #endif      
+      #endif
     }
 #ifdef COLORS
     else if (ConfigModeSubStates == CS_MAINCOLOR) {
@@ -220,7 +220,7 @@ void mainClick() {
         lightOn(currentColor);
       #endif  // PIXELBLADE
     }
-    //modification=0;  // reset config mode change indicator 
+    //modification=0;  // reset config mode change indicator
 #else // not COLORS
     #if defined(PIXELBLADE) or defined(STAR_LED)
     else if (ConfigModeSubStates == CS_MAINCOLOR) {
@@ -263,7 +263,7 @@ void mainClick() {
       #endif  // PIXELBLADE
     }
     #endif // PIXELBLADE or STAR_LED
-#endif // COLORS/not COLORS   
+#endif // COLORS/not COLORS
 	}
 	else if (SaberState==S_STANDBY) {
 		// LightSaber poweron
@@ -272,7 +272,7 @@ void mainClick() {
    ActionModeSubStates=AS_IGNITION;
 		//actionMode = true;
 	}
-#ifdef JUKEBOX 
+#ifdef JUKEBOX
   else if (SaberState==S_JUKEBOX) {
 #ifdef SINGLEBUTTON
     #if defined LS_BUTTON_DEBUG
@@ -332,7 +332,7 @@ void mainDoubleClick() {
       HumRelaunch();
       ActionModeSubStates=AS_HUM;
       accentLEDControl(AL_ON);
-    }    
+    }
 } else if (SaberState==S_CONFIG) {
 // Change Menu
     switch(ConfigModeSubStates) {
@@ -341,7 +341,7 @@ void mainDoubleClick() {
           lightOff(ledPins);
       #else
           lightOff();
-      #endif        
+      #endif
         ConfigModeSubStates=CS_SOUNDFONT;
         SinglePlay_Sound(5);
         delay(600);
@@ -357,13 +357,13 @@ void mainDoubleClick() {
             }
               lightOn(currentColor);
           #endif  // PIXELBLADE
-        delay(500);        
+        delay(500);
         break;
       case CS_SOUNDFONT:
         #ifdef LEDSTRINGS
           #if defined LS_FSM
             Serial.print(F("Volume"));
-          #endif  
+          #endif
           ConfigModeSubStates=CS_VOLUME;
           BladeMeter(storage.volume*100/30);
           SinglePlay_Sound(4);
@@ -371,10 +371,10 @@ void mainDoubleClick() {
         #else
           ConfigModeSubStates=CS_MAINCOLOR;
           SinglePlay_Sound(6);
-          delay(500); 
+          delay(500);
           #if defined LS_FSM
             Serial.print(F("Main color"));
-          #endif        
+          #endif
           #if defined STAR_LED
             getColor(currentColor, storage.sndProfile[storage.soundFont].mainColor);
             lightOn(ledPins, currentColor);
@@ -388,7 +388,7 @@ void mainDoubleClick() {
               lightOn(currentColor);
             #else  // not COLORS
               lightOn(currentColor, NUMPIXELS/2, NUMPIXELS-6);
-            #endif 
+            #endif
           #endif  // PIXELBLADE
         #endif // is/isnot LEDSTRINGS
         break;
@@ -409,7 +409,7 @@ void mainDoubleClick() {
             }
               lightOn(currentColor);
           #endif  // PIXELBLADE
-          delay(500);      
+          delay(500);
           break;
     #endif // DEEP_SLEEP
       case CS_VOLUME:
@@ -438,15 +438,15 @@ void mainDoubleClick() {
                 lightOn(currentColor);
             #endif  // PIXELBLADE
           delay(500);
-        #endif // DEEP_SLEEP        
+        #endif // DEEP_SLEEP
         break;
       case CS_MAINCOLOR:
         ConfigModeSubStates=CS_CLASHCOLOR;
         SinglePlay_Sound(7);
-        delay(500); 
+        delay(500);
         #if defined LS_FSM
           Serial.print(F("Clash color"));
-        #endif        
+        #endif
         #if defined STAR_LED
           getColor(currentColor, storage.sndProfile[storage.soundFont].clashColor);
           lightOn(ledPins, currentColor);
@@ -460,16 +460,16 @@ void mainDoubleClick() {
               lightOn(currentColor);
             #else  // not COLORS
               lightOn(currentColor, 1, NUMPIXELS/2-1);
-            #endif 
+            #endif
          #endif  // PIXELBLADE
         break;
       case CS_CLASHCOLOR:
         ConfigModeSubStates=CS_BLASTCOLOR;
         SinglePlay_Sound(8);
-        delay(500); 
+        delay(500);
         #if defined LS_FSM
           Serial.print(F("Blaster color"));
-        #endif        
+        #endif
         #if defined STAR_LED
           getColor(currentColor, storage.sndProfile[storage.soundFont].blasterboltColor);
           lightOn(ledPins, currentColor);
@@ -483,21 +483,21 @@ void mainDoubleClick() {
               lightOn(currentColor);
             #else  // not COLORS
               lightOn(currentColor, NUMPIXELS*3/4-5, NUMPIXELS*3/4);
-            #endif 
+            #endif
          #endif  // PIXELBLADE
         break;
       case CS_BLASTCOLOR:
         #if defined LS_FSM
           Serial.print(F("Volume"));
-        #endif  
+        #endif
         ConfigModeSubStates=CS_VOLUME;
         BladeMeter(storage.volume*100/30);
         SinglePlay_Sound(4);
-        delay(500); 
-        break;   
+        delay(500);
+        break;
       }
   }
-#ifdef JUKEBOX 
+#ifdef JUKEBOX
   else if (SaberState==S_STANDBY) {
       #if defined LS_BUTTON_DEBUG
             Serial.println(F("Enter JukeBox"));
@@ -521,10 +521,10 @@ void mainDoubleClick() {
       case CS_MAINCOLOR:
         ConfigModeSubStates=CS_CLASHCOLOR;
         SinglePlay_Sound(7);
-        delay(500); 
+        delay(500);
         #if defined LS_FSM
           Serial.print(F("Clash color"));
-        #endif        
+        #endif
         #if defined STAR_LED
           getColor(currentColor, storage.sndProfile[storage.soundFont].clashColor);
           lightOn(ledPins, currentColor);
@@ -538,16 +538,16 @@ void mainDoubleClick() {
               lightOn(currentColor);
             #else  // not COLORS
               lightOn(currentColor, 1, NUMPIXELS/2-1);
-            #endif 
+            #endif
          #endif  // PIXELBLADE
         break;
       case CS_CLASHCOLOR:
         ConfigModeSubStates=CS_BLASTCOLOR;
         SinglePlay_Sound(8);
-        delay(500); 
+        delay(500);
         #if defined LS_FSM
           Serial.print(F("Blaster color"));
-        #endif        
+        #endif
         #if defined STAR_LED
           getColor(currentColor, storage.sndProfile[storage.soundFont].blasterboltColor);
           lightOn(ledPins, currentColor);
@@ -561,17 +561,17 @@ void mainDoubleClick() {
               lightOn(currentColor);
             #else  // not COLORS
               lightOn(currentColor, NUMPIXELS*3/4-5, NUMPIXELS*3/4);
-            #endif 
+            #endif
          #endif  // PIXELBLADE
         break;
       case CS_BLASTCOLOR:
         #if defined LS_FSM
           Serial.print(F("Volume"));
-        #endif  
+        #endif
         ConfigModeSubStates=CS_VOLUME;
         SinglePlay_Sound(4);
-        delay(500); 
-        break;   
+        delay(500);
+        break;
       }*/
 #endif  // SINGLEBUTTON
 } // mainDoubleClick
@@ -606,13 +606,13 @@ void mainLongPressStart() {
             }
               lightOn(currentColor);
           #endif  // PIXELBLADE
-        delay(500);        
+        delay(500);
         break;
       case CS_SOUNDFONT:
         #ifdef LEDSTRINGS
           #if defined LS_FSM
             Serial.print(F("Volume"));
-          #endif  
+          #endif
           ConfigModeSubStates=CS_VOLUME;
           BladeMeter(storage.volume*100/30);
           SinglePlay_Sound(4);
@@ -620,10 +620,10 @@ void mainLongPressStart() {
         #else  // not LEDSTRINGS
           ConfigModeSubStates=CS_MAINCOLOR;
           SinglePlay_Sound(6);
-          delay(500); 
+          delay(500);
           #if defined LS_FSM
             Serial.print(F("Main color"));
-          #endif        
+          #endif
           #if defined STAR_LED
               getColor(storage.sndProfile[storage.soundFont].mainColor);
             lightOn(ledPins, currentColor);
@@ -637,7 +637,7 @@ void mainLongPressStart() {
               lightOn(currentColor);
             #else  // not COLORS
               lightOn(currentColor, NUMPIXELS/2, NUMPIXELS-6);
-            #endif 
+            #endif
           #endif  // PIXELBLADE
         #endif // is/isnot LEDSTRINGS
         break;
@@ -666,16 +666,16 @@ void mainLongPressStart() {
             }
               lightOn(currentColor);
           #endif  // PIXELBLADE
-          delay(500);      
+          delay(500);
         #endif  // DEEP_SLEEP
         break;
       case CS_MAINCOLOR:
         ConfigModeSubStates=CS_CLASHCOLOR;
         SinglePlay_Sound(7);
-        delay(500); 
+        delay(500);
         #if defined LS_FSM
           Serial.print(F("Clash color"));
-        #endif        
+        #endif
         #if defined STAR_LED
           getColor(storage.sndProfile[storage.soundFont].clashColor);
           lightOn(ledPins, currentColor);
@@ -689,16 +689,16 @@ void mainLongPressStart() {
               lightOn(currentColor);
             #else  // not COLORS
               lightOn(currentColor, 1, NUMPIXELS/2-1);
-            #endif 
+            #endif
          #endif  // PIXELBLADE
         break;
       case CS_CLASHCOLOR:
         ConfigModeSubStates=CS_BLASTCOLOR;
         SinglePlay_Sound(8);
-        delay(500); 
+        delay(500);
         #if defined LS_FSM
           Serial.print(F("Blaster color"));
-        #endif        
+        #endif
         #if defined STAR_LED
           getColor(storage.sndProfile[storage.soundFont].blasterboltColor);
           lightOn(ledPins, currentColor);
@@ -712,18 +712,18 @@ void mainLongPressStart() {
               lightOn(currentColor);
             #else  // not COLORS
               lightOn(currentColor, NUMPIXELS*3/4-5, NUMPIXELS*3/4);
-            #endif 
+            #endif
          #endif  // PIXELBLADE
         break;
       case CS_BLASTCOLOR:
         #if defined LS_FSM
           Serial.print(F("Volume"));
-        #endif  
+        #endif
         ConfigModeSubStates=CS_VOLUME;
         BladeMeter(storage.volume*100/30);
         SinglePlay_Sound(4);
-        delay(500); 
-        break;   
+        delay(500);
+        break;
       #ifdef DEEP_SLEEP
       case CS_SLEEPINIT:
           ConfigModeSubStates=CS_SOUNDFONT;
@@ -741,7 +741,7 @@ void mainLongPressStart() {
             }
               lightOn(currentColor);
           #endif  // PIXELBLADE
-          delay(500);      
+          delay(500);
           break;
       #endif // DEEP_SLEEP
       }
@@ -772,7 +772,7 @@ void mainLongPressStart() {
     }
     SinglePlay_Sound(jb_track);
   }
-#endif // JUKEBOX 
+#endif // JUKEBOX
 #endif // SINGLEBUTTON
 
 
@@ -780,9 +780,9 @@ void mainLongPressStart() {
   else if (SaberState==S_STANDBY) {
     //Entering Config Mode
     SaberState=S_CONFIG;
-    PrevSaberState=S_STANDBY; 
-    #ifdef PIXELBLADE 
-      pixelblade_KillKey_Enable();     
+    PrevSaberState=S_STANDBY;
+    #ifdef PIXELBLADE
+      pixelblade_KillKey_Enable();
     #endif
 	}
 #endif
@@ -811,7 +811,7 @@ void mainLongPress() {
             lightOn(ledPins, currentColor);
           #endif
       delay(50);
-    
+
       }
     else if (ConfigModeSubStates==CS_CLASHCOLOR) {
       ColorMixing(storage.sndProfile[storage.soundFont].clashColor,modification,false);
@@ -880,7 +880,7 @@ void lockupClick() {
       delay(50);
       #if defined LS_INFO
         Serial.println(storage.volume);
-      #endif      
+      #endif
     }
     else if (ConfigModeSubStates == CS_SOUNDFONT) {
       play = false;
@@ -907,7 +907,7 @@ void lockupClick() {
       delay(150);
       #if defined LS_INFO
         Serial.println(soundFont.getID());
-      #endif      
+      #endif
     }
 #ifdef COLORS
     else if (ConfigModeSubStates == CS_MAINCOLOR) {
@@ -989,7 +989,7 @@ void lockupClick() {
     }
     #endif // PIXELBLADE or STAR_LED
 #endif // COLORS
-	} 
+	}
 #ifdef JUKEBOX
   else if (SaberState==S_JUKEBOX) {
     if (jukebox_play) {
@@ -1032,8 +1032,8 @@ void lockupDoubleClick() {
       HumRelaunch();
       ActionModeSubStates=AS_HUM;
     }
-	} 
-#ifdef JUKEBOX 
+	}
+#ifdef JUKEBOX
 	else if (SaberState==S_STANDBY) {
       #if defined LS_BUTTON_DEBUG
             Serial.println(F("Enter JukeBox"));
@@ -1088,7 +1088,7 @@ void lockupLongPress() {
 		 */
     ActionModeSubStates=AS_BLADELOCKUP; // needed, otherwise the FSM will change to AS_HUM and the lockup will end prematurely when the hum is relaunched
     sndSuppress = millis();  // trick the hum relaunch by starting the stopper all over again otherwise the hum relaunch will interrupt the lockup
-	} 
+	}
 	else if (SaberState==S_CONFIG) {
     #if defined(PIXELBLADE) or defined(STAR_LED)
       #ifndef COLORS

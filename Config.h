@@ -13,11 +13,11 @@
 //#define BATTERY_CHECK // comment to disable
 #define BATTERY_FACTOR 5 // Callibration value to compensate for component variation
 #define BATTERY_READPIN 17 //A3 - read battery level 100kohm from GND, 470kohm from Bat+
-#define LOW_BATTERY 3.3 // low voltage for battery, a 5v Arduino or DIYino requires 3.3v 
+#define LOW_BATTERY 3.3 // low voltage for battery, a 5v Arduino or DIYino requires 3.3v
 #define FULL_BATTERY 4.15 // full voltage for battery, nominally 4.2 for a 3.7v battery
-//cRGB C1;  //Low meter color
-//cRGB C2;  //middle meter color
-//cRGB C3;  //high meter color
+//CRGB C1;  //Low meter color
+//CRGB C2;  //middle meter color
+//CRGB C3;  //high meter color
 
 
 /*!!!!!IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT!!!
@@ -104,7 +104,7 @@
 
 #if defined PIXELBLADE
 // How many leds in one strip?
-#define NUMPIXELS 100  // can go up to 120, could lead to memory problems if further increased
+#define NUMPIXELS 120  // can go up to 120, could lead to memory problems if further increased
 
 #ifdef CROSSGUARDSABER
 // define how many pixels are used for the crossguard and how many for the main blade
@@ -115,23 +115,17 @@
 //#define FIREBLADE
 
 // Number of color defined
-#define COLORS 14
+#define COLORS 6
 static const uint8_t rgbFactor = 255;
 
 // For led chips like NEOPIXELs, which have a data line, ground, and power, you just
 // need to define DATA_PIN.  For led chipsets that are SPI based (four wires - data, clock,
 // ground, and power), like the LPD8806 define both DATA_PIN and CLOCK_PIN
-#define DATA_PIN 			13 // D13
+#define LED_STRIP_DATA_PIN 13
 //#define STRING1			5
 //#define STRING2 			6
 //#define STRING3 			9
 #endif
-
-
-
-
-
-
 
 #if defined STAR_LED
 
@@ -142,7 +136,7 @@ static const uint8_t rgbFactor = 100;
  * Range : 6<->600
  * Default: 48
  */
-#define COLORS		 		14
+#define COLORS		 		6
 #endif
 /************************************/ // BLADE TYPE
 
@@ -157,8 +151,8 @@ static const uint8_t rgbFactor = 100;
  *
  * WARNING ! A too high value may burn
  * your leds. Please make your maths !
- * BE VERY CAREFULL WITH THIS ONE OR 
- * YOU'LL BURN YOUR BLADE'S LED 
+ * BE VERY CAREFULL WITH THIS ONE OR
+ * YOU'LL BURN YOUR BLADE'S LED
  ************************************/
 #define MAX_BRIGHTNESS		50
 
@@ -199,12 +193,12 @@ static const uint8_t rgbFactor = 100;
 
 
 /* Board definitions
- *  
+ *
  */
 
 //#define DIYINO_PRIME
 //#define DIYINO_STARTDUST
-#define ARDUINO_HOMEBREW
+//#define ARDUINO_HOMEBREW
 
 /* DEEP_SLEEP
  * If you want to enable/disable
@@ -256,7 +250,7 @@ static const uint8_t rgbFactor = 100;
 #endif
 #if defined STAR_LED
 
-  #ifdef DIYINO_PRIME 
+  #ifdef DIYINO_PRIME
     #define LED_RED       3
     #define LED_GREEN       5
     #define LED_BLUE      6
@@ -268,10 +262,10 @@ static const uint8_t rgbFactor = 100;
 #endif
 
 
-#ifdef DIYINO_PRIME 
+#ifdef DIYINO_PRIME
   #define MP3_PSWITCH 15
   #define FTDI_PSWITCH 16
-#else if DIYINO_STARDUST 
+#else if DIYINO_STARDUST
   #define MP3_PSWITCH 16
   #define FTDI_PSWITCH 4
 #endif
@@ -318,15 +312,13 @@ static const uint8_t rgbFactor = 100;
 #define BLUE_ACCENT_LED  A7  //.... A7 is input only ...
 #endif
 
-
-
 #define DFPLAYER_RX			8
 #define DFPLAYER_TX			7
 #define SPK1				20 //A6
 #define SPK2				21 //A7
 
 
-#ifdef DIYINO_PRIME 
+#ifdef DIYINO_PRIME
   #define MAIN_BUTTON			12
   #define LOCKUP_BUTTON		4
 #else if DIYINO_STARDUST
@@ -367,27 +359,27 @@ static const uint8_t rgbFactor = 100;
  * For daily use I recommend you comment LS_INFO
  * When you plug your device to USB uncomment LS_INFO !
  */
-#define LS_SERIAL  //enable serial communication using Wire library
-#if defined LS_SERIAL
-#define LS_FSM
-#define LS_INFO
-#define LS_DEBUG
-#endif
+//#define LS_SERIAL  //enable serial communication using Wire library
+//#if defined LS_SERIAL
+//#define LS_FSM
+//#define LS_INFO
+//#define LS_DEBUG
+//#endif
 
-#if defined LS_DEBUG
-#define LS_BUTTON_DEBUG
+//#if defined LS_DEBUG
+//#define LS_BUTTON_DEBUG
 //#define LS_MOTION_DEBUG
 //#define LS_MOTION_HEAVY_DEBUG
 //#define LS_RELAUNCH_DEBUG
 //#define LS_DEBUG_SLEEP
-#endif
+//#endif
 
-#if defined LS_MOTION_DEBUG
-#define LS_SWING_DEBUG
-#define LS_SWING_HEAVY_DEBUG
+//#if defined LS_MOTION_DEBUG
+//#define LS_SWING_DEBUG
+//#define LS_SWING_HEAVY_DEBUG
 //#define LS_CLASH_DEBUG
 //#define LS_CLASH_HEAVY_DEBUG
-#endif
+//#endif
 
 
 

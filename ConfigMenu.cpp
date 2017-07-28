@@ -9,10 +9,6 @@
 #include "Config.h"
 #include "Light.h"
 
-#if defined PIXELBLADE
-#include <WS2812.h>
-#endif
-
 extern int8_t modification;
 extern bool play;
 extern int16_t value;
@@ -49,14 +45,14 @@ void confParseValue(uint16_t variable, uint16_t min, uint16_t max,
 /*#ifdef COLORS
 void confMenuStart(uint16_t variable, uint16_t sound, uint8_t menu) {
 #else
-void confMenuStart(cRGB variable, uint16_t sound, uint8_t menu) {
+void confMenuStart(CRGB variable, uint16_t sound, uint8_t menu) {
 #endif
   extern uint8_t ledPins[];
 #if defined STAR_LED
 	extern uint8_t currentColor[];
 #endif
 #if defined PIXELBLADE
-	extern cRGB currentColor;
+	extern CRGB currentColor;
 #endif
 	extern bool enterMenu;
 	if (enterMenu) {
@@ -156,5 +152,5 @@ void confMenuStart(cRGB variable, uint16_t sound, uint8_t menu) {
 		delay(100);
 	}
 } //confMenuStart
-*/                            
+*/
 

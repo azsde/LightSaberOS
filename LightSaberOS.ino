@@ -14,7 +14,7 @@
 /***************************************************************************************************
 * DFPLAYER variables
 */
-//#define OLD_DPFPLAYER_LIB
+#define OLD_DPFPLAYER_LIB
 #ifdef OLD_DPFPLAYER_LIB
 #include <SoftwareSerial.h> // interestingly the DFPlayer lib refuses
 #include "DFPlayer_Mini_Mp3.h"
@@ -41,9 +41,6 @@ DFPlayer dfplayer;
 
 #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
 #include <Wire.h>
-#endif
-#if defined PIXELBLADE
-#include <WS2812.h>
 #endif
 
 #ifdef DEEP_SLEEP
@@ -110,7 +107,7 @@ uint8_t blasterPin;
 #endif
 #if defined STAR_LED
 uint8_t ledPins[] = {LED_RED, LED_GREEN, LED_BLUE};
-cRGB currentColor;
+CRGB currentColor;
 //uint8_t currentColor[4]; //0:Red 1:Green 2:Blue 3:ColorID
 #endif
 #if defined PIXELBLADE
@@ -119,9 +116,10 @@ cRGB currentColor;
 #else if #ifdef DIYINO_STARDUST
   uint8_t ledPins[] = {LS1, LS2, LS3};
 #endif
-WS2812 pixels(NUMPIXELS);
-cRGB color;
-cRGB currentColor;
+// Define the array of leds
+CRGB pixels[NUMPIXELS];
+CRGB color;
+CRGB currentColor;
 uint8_t blasterPixel;
 #endif
 
@@ -177,9 +175,9 @@ struct StoreStruct {
     uint8_t clashColor;//colorID
     uint8_t blasterboltColor;//colorID
   #else
-    cRGB mainColor;
-    cRGB clashColor;
-    cRGB blasterboltColor;
+    CRGB mainColor;
+    CRGB clashColor;
+    CRGB blasterboltColor;
   #endif
   }sndProfile[SOUNDFONT_QUANTITY + 2];
 }storage;
@@ -198,9 +196,9 @@ struct StoreStruct {
     uint8_t clashColor;//colorID
     uint8_t blasterboltColor;//colorID
   #else
-    cRGB mainColor;
-    cRGB clashColor;
-    cRGB blasterboltColor;
+    CRGB mainColor;
+    CRGB clashColor;
+    CRGB blasterboltColor;
   #endif
   }sndProfile[SOUNDFONT_QUANTITY + 2];
 }storage;
@@ -235,7 +233,7 @@ void setup() {
 	// or initialise value with default ones set in StoreStruct
 	EEPROM.setMemPool(MEMORYBASE, EEPROMSizeATmega328); //Set memorypool base to 32, assume Arduino Uno board
 	configAdress = EEPROM.getAddress(sizeof(StoreStruct)); // Size of config object
- 
+
 	if (!loadConfig()) {
 		for (uint8_t i = 0; i <= 2; i++)
 			storage.version[i] = CONFIG_VERSION[i];
@@ -444,7 +442,8 @@ void setup() {
 #endif
 
 #if defined PIXELBLADE
-  pixels.setOutput(DATA_PIN); // This initializes the NeoPixel library.
+  FastLED.addLeds<WS2812B, LED_STRIP_DATA_PIN, GRB>(pixels, NUMPIXELS);
+  FastLED.setBrightness(MAX_BRIGHTNESS); // This initializes the NeoPixel library.
   pixelblade_KillKey_Disable();
   currentColor.r = 0;
   currentColor.g = 0;
@@ -1419,16 +1418,16 @@ void sleepNow()         // here we put the arduino to sleep
 {
 
     power_all_disable ();   // turn off all modules -> no measurable effect
-     
+
     set_sleep_mode(SLEEP_MODE_PWR_DOWN);   // sleep mode is set here
 
     sleep_enable();          // enables the sleep bit in the mcucr register
-                             // so sleep is possible. just a safety pin 
+                             // so sleep is possible. just a safety pin
 
     // turn off brown-out enable in software -> no measurable effect
     MCUCR = bit (BODS) | bit (BODSE);
-    MCUCR = bit (BODS); 
-  
+    MCUCR = bit (BODS);
+
     PCIFR  |= bit (PCIF0) | bit (PCIF1) | bit (PCIF2);   // clear any outstanding interrupts
     PCICR  |= bit (PCIE0) | bit (PCIE1) | bit (PCIE2);   // enable pin change interrupts
 
@@ -1437,8 +1436,8 @@ void sleepNow()         // here we put the arduino to sleep
 
     sleep_disable();         // first thing after waking from sleep:
                              // disable sleep...
-    detachInterrupt(0);      // disables interrupt 0 on pin 2 so the 
-                             // wakeUpNow code will not be executed 
+    detachInterrupt(0);      // disables interrupt 0 on pin 2 so the
+                             // wakeUpNow code will not be executed
                              // during normal running time.
 
 }
