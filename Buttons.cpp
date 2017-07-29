@@ -331,7 +331,11 @@ void mainDoubleClick() {
       #endif
       HumRelaunch();
       ActionModeSubStates=AS_HUM;
+      #ifdef ACCENT_LED
       accentLEDControl(AL_ON);
+      #else if MULTICOLOR_ACCENT_LED
+      //accentLEDControl(AL_ON,currentColor);
+      #endif 
     }
 } else if (SaberState==S_CONFIG) {
 // Change Menu

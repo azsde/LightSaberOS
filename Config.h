@@ -286,7 +286,7 @@ static const uint8_t rgbFactor = 100;
  * LEDSTRINGS users have no choice :
  * your forced to use Software Accent LED
  *************************************/
-#define ACCENT_LED  14 //A0
+//#define ACCENT_LED  14 //A0
 #if defined ACCENT_LED
 /*
  * Soft or Had PWM for Accent
@@ -305,11 +305,19 @@ static const uint8_t rgbFactor = 100;
  * Enable/disable management of
  * a button accent led
  *************************************/
-//#define MULTICOLOR_ACCENT_LED
+#define MULTICOLOR_ACCENT_LED 14
 #if defined MULTICOLOR_ACCENT_LED
-#define RED_ACCENT_LED  16 //A2
-#define GREEN_ACCENT_LED  17 //A3
-#define BLUE_ACCENT_LED  A7  //.... A7 is input only ...
+#define COMMON_ANODE // Comment if using common cathode
+#define RED_ACCENT_LED  9 //A2
+#define GREEN_ACCENT_LED  10 //A3
+#define BLUE_ACCENT_LED  11  //.... A7 is input only ...
+/*
+ * Soft or Had PWM for Accent
+ */
+//#define SOFT_ACCENT
+#if not defined SOFT_ACCENT
+#define HARD_ACCENT
+#endif
 #endif
 
 #define DFPLAYER_RX			8

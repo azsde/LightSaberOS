@@ -462,6 +462,8 @@ void setup() {
 
 #if defined ACCENT_LED
   pinMode(ACCENT_LED, OUTPUT);
+#else if MULTICOLOR_ACCENT_LED
+  pinMode(MULTICOLOR_ACCENT_LED, OUTPUT);
 #endif
 
   //Randomize randomness (no really that's what it does)
@@ -559,12 +561,12 @@ void loop() {
      ACTION MODE HANDLER
   */ /////////////////////////////////////////////////////////////////////////////////////////////////////////
   if (SaberState == S_SABERON) {
-    /*
+    
       // In case we want to time the loop
       Serial.print(F("Action Mode"));
       Serial.print(F(" time="));
       Serial.println(millis());
-    */
+    
     if (ActionModeSubStates != AS_HUM) { // needed for hum relauch only in case it's not already being played
       hum_playing = false;
     }
@@ -617,9 +619,11 @@ void loop() {
       //ignition = true;
 
 #if defined ACCENT_LED
-      // turns accent LED On
-      accentLEDControl(AL_ON);
-      //digitalWrite(ACCENT_LED, HIGH);
+  // turns accent LED On
+  accentLEDControl(AL_ON);
+  //digitalWrite(ACCENT_LED, HIGH);
+#else if MULTICOLOR_ACCENT_LED
+  accentLEDControl(AL_ON, currentColor);
 #endif
     }
 
@@ -936,7 +940,11 @@ void loop() {
         ActionModeSubStates = AS_HUM;
       }
       else if (ActionModeSubStates == AS_BLASTERDEFLECTMOTION) {
-        accentLEDControl(AL_PULSE);
+        #ifdef ACCENT_LED
+            accentLEDControl(AL_PULSE);
+        #else if MULTICOLOR_ACCENT_LED
+            accentLEDControl(AL_PULSE, currentColor);
+        #endif
       }
       // relaunch hum if more than HUM_RELAUNCH time elapsed since entering AS_HUM state
       if (millis() - sndSuppress > HUM_RELAUNCH and not hum_playing and ActionModeSubStates != AS_BLADELOCKUP) {
@@ -956,7 +964,11 @@ void loop() {
       //lightFlicker(0, ActionModeSubStates);
 #endif
       if (lockuponclash) {
-        accentLEDControl(AL_PULSE);
+        #ifdef ACCENT_LED
+            accentLEDControl(AL_PULSE);
+        #else if MULTICOLOR_ACCENT_LED
+            accentLEDControl(AL_PULSE, currentColor);
+        #endif
       }
     }
     // ************************* blade movement detection ends***********************************
@@ -1113,9 +1125,11 @@ void loop() {
     lightOff();
 #endif
 
+#ifdef ACCENT_LED
     accentLEDControl(AL_ON);
-
-
+#else if MULTICOLOR_ACCENT_LED
+    accentLEDControl(AL_ON, currentColor);
+#endif
 
   } // END STANDBY MODE
 #ifdef JUKEBOX
@@ -1372,7 +1386,7 @@ void Set_Loop_Playback() {
 #ifdef OLD_DPFPLAYER_LIB
   mp3_single_loop(true);
 #else
-  dfplayer.setSingleLoop(true);;
+  dfplayer.setSingleLoop(true);
 #endif
 }
 
@@ -1380,9 +1394,9 @@ void InitDFPlayer() {
 #ifdef OLD_DPFPLAYER_LIB
   mp3_set_serial (mp3player);  //set softwareSerial for DFPlayer-mini mp3 module
   mp3player.begin(9600);
-  delay(50);
+  delay(200);
   mp3_set_device(1); //playback from SD card
-  delay(50);
+  delay(200);
   mp3_set_volume (storage.volume);
 #else
   dfplayer.setSerial(DFPLAYER_TX, DFPLAYER_RX);

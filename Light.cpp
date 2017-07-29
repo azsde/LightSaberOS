@@ -15,7 +15,7 @@ extern SaberStateEnum PrevSaberState;
 extern ActionModeSubStatesEnum ActionModeSubStates;
 extern ConfigModeSubStatesEnum ConfigModeSubStates;
 
-# if defined ACCENT_LED
+# if defined ACCENT_LED or MULTICOLOR_ACCENT_LED
 unsigned long lastAccent = millis();
 #if defined SOFT_ACCENT
 unsigned long lastAccentTick = micros();
@@ -1365,6 +1365,61 @@ void fadeAccent() {
 #endif
 #endif
 
+#ifdef MULTICOLOR_ACCENT_LED
+void accentLEDControl( AccentLedAction_En AccentLedAction, CRGB color) {
+
+  Serial.print(F("Color R: ")); Serial.println(color.r);
+  Serial.print(F("Color G: ")); Serial.println(color.g);
+  Serial.print(F("Color B: ")); Serial.println(color.b);
+
+  CRGB value;
+  #ifdef COMMON_ANODE
+  value.r = 255 - color.r;
+  value.g = 255 - color.g;
+  value.b = 255 - color.b;
+  #endif
+    
+  if (AccentLedAction==AL_PULSE) {
+    #if defined HARD_ACCENT
+        if (millis() - lastAccent <= 400) {
+          analogWrite(MULTICOLOR_ACCENT_LED, millis() - lastAccent);
+        } else if (millis() - lastAccent > 400
+            and millis() - lastAccent <= 800) {
+          analogWrite(MULTICOLOR_ACCENT_LED, 800 - (millis() - lastAccent));
+        } else {
+          lastAccent = millis();
+        }
+    #endif
+
+    #if defined SOFT_ACCENT
+
+        PWM();
+
+        if (millis() - lastAccent >= 20) {
+          // moved to own funciton for clarity
+          fadeAccent();
+          lastAccent = millis();
+        }
+    #endif
+  }
+  else if (AccentLedAction==AL_ON) {
+  
+  digitalWrite(MULTICOLOR_ACCENT_LED,HIGH);
+  #ifdef COMMON_ANODE
+  analogWrite(RED_ACCENT_LED,value.r);
+  analogWrite(GREEN_ACCENT_LED,value.g);
+  analogWrite(BLUE_ACCENT_LED,value.b);
+  #else
+  analogWrite(RED_ACCENT_LED,color.r);
+  analogWrite(GREEN_ACCENT_LED,color.g);
+  analogWrite(BLUE_ACCENT_LED,color.b);
+  #endif
+  }
+  else {  // AL_OFF
+    digitalWrite(MULTICOLOR_ACCENT_LED,LOW);
+  }
+}
+#endif //MULTICOLOR_ACCENT_LED
 
 void BladeMeter (int meterLevel) {  //expects input of 0-100
   //normalize data if to max and min if out of range
