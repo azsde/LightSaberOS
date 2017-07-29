@@ -569,11 +569,11 @@ void JukeBox_Stroboscope() {
 #if defined PIXELBLADE
 static uint8_t flickerPos = 0;
 static long lastFlicker = millis();
-extern CRGB pixels;
+extern CRGB pixels[NUMPIXELS];
 
 extern CRGB currentColor;
 
-void pixelblade_KillKey_Enable() {
+/*void pixelblade_KillKey_Enable() {
   // cut power to the neopixels stripes by disconnecting their GND signal using the LS pins
     digitalWrite(3, LOW);
     digitalWrite(5, LOW);
@@ -592,7 +592,7 @@ void pixelblade_KillKey_Disable() {
     digitalWrite(9, HIGH);
     digitalWrite(10, HIGH);
     digitalWrite(11, HIGH);
-}
+}*/
 
 void lightOn(CRGB color, int8_t StartPixel, int8_t StopPixel) {
 	// Light On
@@ -691,22 +691,19 @@ void ColorMixing(CRGB colorID, int8_t mod, uint8_t maxBrightness, bool Saturate)
 #endif
 
 void lightIgnition(CRGB color, uint16_t time, uint8_t type) {
-	CRGB value;
-	value.r = MAX_BRIGHTNESS * color.r / rgbFactor;
-	value.g = MAX_BRIGHTNESS * color.g / rgbFactor;
-	value.b = MAX_BRIGHTNESS * color.b / rgbFactor;
+	CRGB value = color;
 	//switch (type) {
 	//case 0:
 // Light up the ledstrings Movie-like
-    RampPixels(time, true);
-/*		for (uint16_t i = 0; i < NUMPIXELS; i++) {
+    //RampPixels(time, true);
+		for (uint16_t i = 0; i < NUMPIXELS; i++) {
 			pixels[i] = value;
 			i++;
 			pixels[i] = value;
 			FastLED.show();
       //delay(time/NUMPIXELS);
 			delayMicroseconds((time * 1000) / NUMPIXELS);
-		}*/
+		}
 		//Serial.println(//TODO-pixels.getBrightness());
 		//break;
 		/*
@@ -734,7 +731,7 @@ void lightRetract(uint16_t time, uint8_t type) {
 		value.g = 0;
 		value.r = 0; // RGB Value -> Off
     RampPixels(time, false);
-		/*for (uint16_t i = NUMPIXELS; i > 0; i--) {
+		for (uint16_t i = NUMPIXELS; i > 0; i--) {
 			//BUG CORRECTION:
 			//Not uint8_t here because Arduino nano clones did go
 			// on an infinite loop for no reason making the board
@@ -744,7 +741,7 @@ void lightRetract(uint16_t time, uint8_t type) {
 			pixels[i] = value;
 			FastLED.show();
 			delayMicroseconds((time * 1000) / NUMPIXELS);
-		}*/
+		}
 		//break;
 		/*
 		 case 1:

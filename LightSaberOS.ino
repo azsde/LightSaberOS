@@ -442,9 +442,9 @@ void setup() {
 #endif
 
 #if defined PIXELBLADE
-  FastLED.addLeds<WS2812B, LED_STRIP_DATA_PIN, GRB>(pixels, NUMPIXELS);
+  FastLED.addLeds<WS2812B, LED_STRIP_DATA_PIN, GRB>(pixels, NUMPIXELS).setCorrection(TypicalLEDStrip);
   FastLED.setBrightness(MAX_BRIGHTNESS); // This initializes the NeoPixel library.
-  pixelblade_KillKey_Disable();
+//  pixelblade_KillKey_Disable();
   currentColor.r = 0;
   currentColor.g = 0;
   currentColor.b = 0;
@@ -452,7 +452,7 @@ void setup() {
   delay(300);
   lightOff();
   getColor(storage.sndProfile[storage.soundFont].mainColor);
-  pixelblade_KillKey_Enable();
+//  pixelblade_KillKey_Enable();
 #endif
 
 #if defined FoCSTRING
@@ -583,9 +583,9 @@ void loop() {
 #ifndef SINGLEBUTTON
       lockupButton.setPressTicks(PRESS_ACTION);
 #endif
-#if defined PIXELBLADE
+/*#if defined PIXELBLADE
       pixelblade_KillKey_Disable();
-#endif
+#endif*/
 #if defined LS_INFO
       Serial.println(F("START ACTION"));
 #endif
@@ -601,10 +601,11 @@ void loop() {
       lightIgnition(ledPins, currentColor, soundFont.getPowerOnTime());
 #endif
 #if defined PIXELBLADE
-      for (uint8_t i = 0; i <= 5; i++) {
+      /*for (uint8_t i = 0; i <= 5; i++) {
         digitalWrite(ledPins[i], HIGH);
-      }
-      lightIgnition(currentColor, soundFont.getPowerOnTime(), 0);
+      }*/
+      //lightIgnition(currentColor, soundFont.getPowerOnTime(), 0);
+      deployBlade(currentColor);
 
 #endif
       sndSuppress = millis();
@@ -952,7 +953,7 @@ void loop() {
 
 #ifdef PIXELBLADE
       getColor(storage.sndProfile[storage.soundFont].mainColor);
-      lightFlicker(0, ActionModeSubStates);
+      //lightFlicker(0, ActionModeSubStates);
 #endif
       if (lockuponclash) {
         accentLEDControl(AL_PULSE);
@@ -972,9 +973,9 @@ void loop() {
       SinglePlay_Sound(3);
       delay(600);
 
-#if defined PIXELBLADE
+/*#if defined PIXELBLADE
       pixelblade_KillKey_Disable();
-#endif
+#endif*/
 
 #if defined LS_INFO
       Serial.println(F("START CONF"));
@@ -999,8 +1000,8 @@ void loop() {
       BladeMeter(batLevel);
       delay(500);
 #else
-      ConfigModeSubStates = CS_SOUNDFONT;
-      SinglePlay_Sound(5);
+      ConfigModeSubStates = CS_MAINCOLOR;
+      SinglePlay_Sound(6);
       delay(500);
 #endif
     }
@@ -1069,7 +1070,8 @@ void loop() {
 #endif
 #if defined PIXELBLADE
       lightRetract(soundFont.getPowerOffTime(), soundFont.getPowerOffEffect());
-      pixelblade_KillKey_Enable();
+      //pixelblade_KillKey_Enable();
+      //retractBlade();
 #endif
 
     }
@@ -1126,9 +1128,9 @@ void loop() {
       PrevSaberState = S_JUKEBOX;
       SinglePlay_Sound(14);  // play intro sound of JukeBox mode
       delay(2500);
-#ifdef PIXELBLADE
+/*#ifdef PIXELBLADE
       pixelblade_KillKey_Disable();
-#endif
+#endif*/
 #if defined LS_INFO
       Serial.println(F("START JUKEBOX"));
 #endif
@@ -1508,3 +1510,20 @@ float batCheck() {
   return voltage;
   // return 3.2; //temporary value for testing
 }
+
+void deployBlade(CRGB color) {
+  for (uint16_t i = 0 ; i < NUMPIXELS ; i ++ ) {
+      pixels[i] = color;
+      FastLED.show();
+      delay(10);
+  }
+}
+
+void retractBlade() {
+  for (uint16_t i = NUMPIXELS ; i > 0 ; i -- ) {
+      pixels[i] = CRGB::Black;
+      FastLED.show();
+      delay(10);
+  }
+}
+

@@ -154,7 +154,7 @@ static const uint8_t rgbFactor = 100;
  * BE VERY CAREFULL WITH THIS ONE OR
  * YOU'LL BURN YOUR BLADE'S LED
  ************************************/
-#define MAX_BRIGHTNESS		50
+#define MAX_BRIGHTNESS	100
 
 // How long do the light effect last for the different FX's
 #define CLASH_FX_DURATION 200
@@ -333,7 +333,7 @@ static const uint8_t rgbFactor = 100;
 /*
  * CONFIG MENU PARAMETERS
  */
-#define JUKEBOX
+//#define JUKEBOX
 #if defined STAR_LED
 #define CONFIG_BLADE_MAIN_COLOR
 #define CONFIG_BLADE_CLASH_COLOR

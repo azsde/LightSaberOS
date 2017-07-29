@@ -751,9 +751,9 @@ void mainLongPressStart() {
     changeMenu = false;
     SaberState=S_STANDBY;
     PrevSaberState=S_CONFIG;
-    #ifdef PIXELBLADE
+    /*#ifdef PIXELBLADE
       pixelblade_KillKey_Disable();
-    #endif
+    #endif*/
   }
 #endif
   }
@@ -781,9 +781,9 @@ void mainLongPressStart() {
     //Entering Config Mode
     SaberState=S_CONFIG;
     PrevSaberState=S_STANDBY;
-    #ifdef PIXELBLADE
+/*    #ifdef PIXELBLADE
       pixelblade_KillKey_Enable();
-    #endif
+    #endif*/
 	}
 #endif
 } // mainLongPressStart

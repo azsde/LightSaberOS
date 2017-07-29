@@ -75,8 +75,8 @@ void getColor(CRGB color); //getColor
 
 #if defined PIXELBLADE
 
-void pixelblade_KillKey_Enable();
-void pixelblade_KillKey_Disable();
+//void pixelblade_KillKey_Enable();
+//void pixelblade_KillKey_Disable();
 
 void lightOn(CRGB color, int8_t StartPixel=-1, int8_t StopPixel=-1);
 void lightOff();
