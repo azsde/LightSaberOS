@@ -16,14 +16,16 @@
 */
 #define OLD_DPFPLAYER_LIB
 #ifdef OLD_DPFPLAYER_LIB
-#include <SoftwareSerial.h> // interestingly the DFPlayer lib refuses
-#include "DFPlayer_Mini_Mp3.h"
-//SoftwareSerial mp3player(DFPLAYER_TX, DFPLAYER_RX); // TX, RX
-SoftwareSerial mp3player(7, 8); // TX, RX
+#include "SoftwareSerial.h"
+#include "DFRobotDFPlayerMini.h"
+SoftwareSerial mySoftwareSerial(7, 8); // RX, TX
+DFRobotDFPlayerMini myDFPlayer;
 #else
 #include <DFPlayer.h>
 DFPlayer dfplayer;
 #endif
+
+#include <SoftwareSerial.h> // interestingly the DFPlayer lib refuses
 
 #include <Arduino.h>
 #include <I2Cdev.h>
@@ -518,11 +520,11 @@ void setup() {
   /***** DF PLAYER INITIALISATION  *****/
   InitDFPlayer();
 
-  delay(200);
+  delay(1500);
   pinMode(SPK1, INPUT);
   pinMode(SPK2, INPUT);
   SinglePlay_Sound(11);
-  delay(20);
+  delay(1500);
 
 #ifdef DEEP_SLEEP
   /************ DEEP_SLEEP MODE SETTINGS **********/
@@ -546,6 +548,8 @@ void setup() {
 // ===               	   			LOOP ROUTINE  	 	                			===
 // ====================================================================================
 void loop() {
+
+  //Serial.println(F("coucou"));
 
   // if MPU6050 DMP programming failed, don't try to do anything : EPIC FAIL !
   if (!dmpReady) {
@@ -1359,7 +1363,8 @@ void HumRelaunch() {
 
 void SinglePlay_Sound(uint8_t track) {
 #ifdef OLD_DPFPLAYER_LIB
-  mp3_play_physical(track);
+  //mp3_play_physical(track);
+  myDFPlayer.play(track);
 #else // DFPlayer_LSOS
   dfplayer.playPhysicalTrack(track);
 #endif
@@ -1367,7 +1372,7 @@ void SinglePlay_Sound(uint8_t track) {
 
 void LoopPlay_Sound(uint8_t track) {
 #ifdef OLD_DPFPLAYER_LIB
-  mp3_loop_play(track);
+  myDFPlayer.loop(track);
 #else // DFPlayer_LSOS
   dfplayer.playSingleLoop(track);
 #endif
@@ -1375,7 +1380,7 @@ void LoopPlay_Sound(uint8_t track) {
 
 void Set_Volume() {
 #ifdef OLD_DPFPLAYER_LIB
-  mp3_set_volume (storage.volume);
+  myDFPlayer.volume(storage.volume);
 #else
   dfplayer.setVolume(storage.volume); // Too Slow: we'll change volume on exit
 #endif
@@ -1384,7 +1389,7 @@ void Set_Volume() {
 
 void Set_Loop_Playback() {
 #ifdef OLD_DPFPLAYER_LIB
-  mp3_single_loop(true);
+  //mp3_single_loop(true);
 #else
   dfplayer.setSingleLoop(true);
 #endif
@@ -1392,12 +1397,22 @@ void Set_Loop_Playback() {
 
 void InitDFPlayer() {
 #ifdef OLD_DPFPLAYER_LIB
-  mp3_set_serial (mp3player);  //set softwareSerial for DFPlayer-mini mp3 module
+  mySoftwareSerial.begin(9600);
+  if (!myDFPlayer.begin(mySoftwareSerial)) {  //Use softwareSerial to communicate with mp3.
+    Serial.println(F("Unable to begin:"));
+    Serial.println(F("1.Please recheck the connection!"));
+    Serial.println(F("2.Please insert the SD card!"));
+    while(true);
+  }
+  Serial.println(F("DFPlayer Mini online."));
+  
+  myDFPlayer.volume(storage.volume);  //Set volume value. From 0 to 30
+  /*mp3_set_serial (mp3player);  //set softwareSerial for DFPlayer-mini mp3 module
   mp3player.begin(9600);
   delay(200);
   mp3_set_device(1); //playback from SD card
   delay(200);
-  mp3_set_volume (storage.volume);
+  mp3_set_volume (storage.volume);*/
 #else
   dfplayer.setSerial(DFPLAYER_TX, DFPLAYER_RX);
   // AK 7.9.2016: if the storage.volume has no or invalid value, it will cause the
@@ -1411,7 +1426,7 @@ void InitDFPlayer() {
 
 void Pause_Sound() {
 #ifdef OLD_DPFPLAYER_LIB
-  mp3_pause();
+  myDFPlayer.pause();
 #else
   dfplayer.pause();
 #endif
@@ -1419,7 +1434,7 @@ void Pause_Sound() {
 
 void Resume_Sound() {
 #ifdef OLD_DPFPLAYER_LIB
-  mp3_play();
+   myDFPlayer.start();
 #else
   dfplayer.play();
 #endif
