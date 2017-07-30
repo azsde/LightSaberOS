@@ -115,7 +115,7 @@
 //#define FIREBLADE
 
 // Number of color defined
-#define COLORS 6
+#define COLORS 3
 static const uint8_t rgbFactor = 255;
 
 // For led chips like NEOPIXELs, which have a data line, ground, and power, you just
@@ -136,7 +136,7 @@ static const uint8_t rgbFactor = 100;
  * Range : 6<->600
  * Default: 48
  */
-#define COLORS		 		6
+#define COLORS		 		3
 #endif
 /************************************/ // BLADE TYPE
 

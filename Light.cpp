@@ -457,6 +457,8 @@ void getColor(CRGB color) {
 
 #ifdef COLORS
   //currentColor[3] = colorID;
+  Serial.print(F("Color : "));
+  Serial.print(F(color));
   switch (color) {
   case 0:
 //Red
@@ -465,16 +467,16 @@ void getColor(CRGB color) {
     currentColor.b = 0;
     break;
   case 1:
-//Yellow
-    currentColor.r = 100;
-    currentColor.g = 100;
-    currentColor.b = 0;
-    break;
-  case 2:
 //Green
     currentColor.r = 0;
     currentColor.g = 100;
     currentColor.b = 0;
+    break;
+  case 2:
+//Blue
+    currentColor.r = 0;
+    currentColor.g = 0;
+    currentColor.b = 100;
     break;
   case 3:
 //Aqua
@@ -955,16 +957,16 @@ void getColor(CRGB color) {
     currentColor.b = 0;
     break;
   case 1:
-//Yellow
-    currentColor.r = 100;
-    currentColor.g = 100;
-    currentColor.b = 0;
-    break;
-  case 2:
 //Green
     currentColor.r = 0;
     currentColor.g = 100;
     currentColor.b = 0;
+    break;
+  case 2:
+//Blue
+    currentColor.r = 0;
+    currentColor.g = 0;
+    currentColor.b = 100;
     break;
   case 3:
 //Aqua
@@ -1368,7 +1370,7 @@ void fadeAccent() {
 #ifdef MULTICOLOR_ACCENT_LED
 void accentLEDControl( AccentLedAction_En AccentLedAction, CRGB color) {
 
-  Serial.print(F("Color R: ")); Serial.println(color.r);
+  /*Serial.print(F("Color R: ")); Serial.println(color.r);
   Serial.print(F("Color G: ")); Serial.println(color.g);
   Serial.print(F("Color B: ")); Serial.println(color.b);
 
@@ -1417,7 +1419,7 @@ void accentLEDControl( AccentLedAction_En AccentLedAction, CRGB color) {
   }
   else {  // AL_OFF
     digitalWrite(MULTICOLOR_ACCENT_LED,LOW);
-  }
+  }*/
 }
 #endif //MULTICOLOR_ACCENT_LED
 

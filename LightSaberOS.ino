@@ -134,7 +134,8 @@ uint8_t randomBlink = 0;
 /***************************************************************************************************
  * Buttons variables
  */
-OneButton mainButton(MAIN_BUTTON, true);
+//OneButton mainButton(MAIN_BUTTON, true);
+OneButton button(12,true);
 #ifndef SINGLEBUTTON
 OneButton lockupButton(LOCKUP_BUTTON, true);
 #endif
@@ -476,13 +477,18 @@ void setup() {
   /***** BUTTONS INITIALISATION  *****/
 
   // link the Main button functions.
-  mainButton.setClickTicks(CLICK);
+/*  mainButton.setClickTicks(CLICK);
   mainButton.setPressTicks(PRESS_CONFIG);
   mainButton.attachClick(mainClick);
   mainButton.attachDoubleClick(mainDoubleClick);
   mainButton.attachLongPressStart(mainLongPressStart);
   mainButton.attachLongPressStop(mainLongPressStop);
-  mainButton.attachDuringLongPress(mainLongPress);
+  mainButton.attachDuringLongPress(mainLongPress);*/
+
+  // link the doubleclick function to be called on a doubleclick event.   
+  //
+  //button.attachDoubleClick(mainDoubleClick);
+  //button.attachDuringLongPress(mainLongPressStart);
 
 #ifndef SINGLEBUTTON
   // link the Lockup button functions.
@@ -542,6 +548,9 @@ void setup() {
   SaberState = S_STANDBY;
   PrevSaberState = S_SLEEP;
   ActionModeSubStates = AS_HUM;
+
+  digitalWrite(MULTICOLOR_ACCENT_LED,HIGH);
+  button.attachClick(mainClick);
 }
 
 // ====================================================================================
@@ -556,7 +565,8 @@ void loop() {
     return;
   }
 
-  mainButton.tick();
+ button.tick();
+//  mainButton.tick();
 #ifndef SINGLEBUTTON
   lockupButton.tick();
 #endif
@@ -567,9 +577,9 @@ void loop() {
   if (SaberState == S_SABERON) {
     
       // In case we want to time the loop
-      Serial.print(F("Action Mode"));
-      Serial.print(F(" time="));
-      Serial.println(millis());
+      //Serial.print(F("Action Mode"));
+      //Serial.print(F(" time="));
+      //Serial.println(millis());
     
     if (ActionModeSubStates != AS_HUM) { // needed for hum relauch only in case it's not already being played
       hum_playing = false;
@@ -1081,13 +1091,13 @@ void loop() {
       lightRetract(ledPins, currentColor, soundFont.getPowerOffTime());
 #endif
 #if defined LEDSTRINGS
-      lightRetract(ledPins, soundFont.getPowerOffTime(),
-                   soundFont.getPowerOffEffect());
+      //lightRetract(ledPins, soundFont.getPowerOffTime(),
+        //           soundFont.getPowerOffEffect());
 #endif
 #if defined PIXELBLADE
-      lightRetract(soundFont.getPowerOffTime(), soundFont.getPowerOffEffect());
+      //lightRetract(soundFont.getPowerOffTime(), soundFont.getPowerOffEffect());
       //pixelblade_KillKey_Enable();
-      //retractBlade();
+      retractBlade();
 #endif
 
     }
@@ -1406,7 +1416,7 @@ void InitDFPlayer() {
   }
   Serial.println(F("DFPlayer Mini online."));
   
-  myDFPlayer.volume(storage.volume);  //Set volume value. From 0 to 30
+  myDFPlayer.volume(25);  //Set volume value. From 0 to 30
   /*mp3_set_serial (mp3player);  //set softwareSerial for DFPlayer-mini mp3 module
   mp3player.begin(9600);
   delay(200);
@@ -1555,4 +1565,3 @@ void retractBlade() {
       delay(10);
   }
 }
-

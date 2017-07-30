@@ -114,8 +114,26 @@ extern struct StoreStruct {
 // ====================================================================================
 // ===               			BUTTONS CALLBACK FUNCTIONS                 			===
 // ====================================================================================
+void red() {
+  analogWrite(RED_ACCENT_LED,0);
+analogWrite(GREEN_ACCENT_LED,255);
+analogWrite(BLUE_ACCENT_LED,255);
+}
+
+void green() {
+  analogWrite(RED_ACCENT_LED,255);
+analogWrite(GREEN_ACCENT_LED,0);
+analogWrite(BLUE_ACCENT_LED,255);
+}
+
+void blue() {
+  analogWrite(RED_ACCENT_LED,255);
+analogWrite(GREEN_ACCENT_LED,255);
+analogWrite(BLUE_ACCENT_LED,0);
+}
 
 void mainClick() {
+  green();
 #if defined LS_BUTTON_DEBUG
 	Serial.println(F("Main button click."));
 #endif
@@ -310,6 +328,7 @@ void mainClick() {
 } // mainClick
 
 void mainDoubleClick() {
+  blue();
 #if defined LS_BUTTON_DEBUG
 	Serial.println(F("Main button double click."));
 #endif
@@ -581,6 +600,7 @@ void mainDoubleClick() {
 } // mainDoubleClick
 
 void mainLongPressStart() {
+  red();
 #if defined LS_BUTTON_DEBUG
 	Serial.println(F("Main button longPress start"));
 #endif
@@ -1152,5 +1172,3 @@ void lockupLongPressStop() {
 	}
 } // lockupLongPressStop
 #endif // SINGLEBUTTON not defined
-
-
