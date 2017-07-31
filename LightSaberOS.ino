@@ -90,11 +90,6 @@ VectorInt16 prevDeltAccel;
  */
 
 #if defined PIXELBLADE
-#ifdef DIYINO_PRIME
-  uint8_t ledPins[] = {LS1, LS2, LS3, LS4, LS5, LS6};
-#else if #ifdef DIYINO_STARDUST
-  uint8_t ledPins[] = {LS1, LS2, LS3};
-#endif
 // Define the array of leds
 CRGB pixels[NUMPIXELS];
 CRGB color;

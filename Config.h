@@ -168,39 +168,6 @@ static const uint8_t rgbFactor = 255;
 #define BLATSTERMOVEMENTTRIGGER
 #endif
 
-
-/* Board definitions
- *
- */
-
-/*
- * PINS DEFINITION
- */
-
-#ifdef PIXELBLADE
-
-  #ifdef DIYINO_PRIME
-    #define LS1       3
-    #define LS2       5
-    #define LS3       6
-    #define LS4       9
-    #define LS5       10
-    #define LS6       11
-  #else if DIYINO_STARDUST
-    #define LS1       5
-    #define LS2       6
-    #define LS3      9
-  #endif
-#endif
-
-#ifdef DIYINO_PRIME
-  #define MP3_PSWITCH 15
-  #define FTDI_PSWITCH 16
-#else if DIYINO_STARDUST
-  #define MP3_PSWITCH 16
-  #define FTDI_PSWITCH 4
-#endif
-
 /*
  * ACCENT_LED
  * Enable/disable management of
@@ -253,15 +220,6 @@ static const uint8_t rgbFactor = 255;
 #define DFPLAYER_TX			7
 #define SPK1				20 //A6
 #define SPK2				21 //A7
-
-
-#ifdef DIYINO_PRIME
-  #define MAIN_BUTTON			12
-  #define LOCKUP_BUTTON		4
-#else if DIYINO_STARDUST
-  #define MAIN_BUTTON      12
-  #define LOCKUP_BUTTON   2
-#endif
 
 #define BUZZMOTOR  17 //A3
 #define BUTTONLEDPIN 16 //A2
