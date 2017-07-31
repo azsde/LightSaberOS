@@ -22,10 +22,6 @@ unsigned long lastAccentTick = micros();
 #endif
 #endif
 
-#ifdef JUKEBOX
-#define SAMPLESIZEAVERAGE 30
-#endif
-
 #ifdef FIREBLADE
 // COOLING: How much does the air cool as it rises?
 // Less cooling = taller flames.  More cooling = shorter flames.
@@ -529,37 +525,6 @@ void getColor(CRGB color) {
     currentColor.b = color.b;
 #endif
 } //getColor
-
-
-#ifdef JUKEBOX
-void JukeBox_Stroboscope(CRGB color) {
-
- uint16_t variation = 0;
- uint16_t temp_variation=0;
- CRGB tempcolor;
-
- for (uint8_t i=0; i<=SAMPLESIZEAVERAGE-1;i++) {
-  temp_variation=temp_variation + constrain(abs(analogRead(SPK1) - analogRead(SPK2)),0,512);
-  //Serial.println(abs(analogRead(SPK1) - analogRead(SPK2)));
- }
- variation=temp_variation/SAMPLESIZEAVERAGE;
-  // assumption -> variation max 280
-  //Serial.print("\t");Serial.println(variation);
-
-
-  for (uint16_t i = 1; i <= variation; i++) {
-    pixels[i] = color;
-  }
-  tempcolor.r = 0;
-  tempcolor.g = 0;
-  tempcolor.b = 0; // RGB Value -> Off
-  for (uint16_t i = (variation)+1; i <= NUMPIXELS; i++) {
-    pixels[i] = tempcolor;
-  }
-  FastLED.show();
-
-}
-#endif
 
 // neopixel ramp code from jbkuma
 void RampPixels(uint16_t RampDuration, bool DirectionUpDown) {

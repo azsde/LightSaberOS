@@ -49,12 +49,6 @@ SoundFont soundFont;
 unsigned long sndSuppress = millis();
 unsigned long sndSuppress2 = millis();
 bool hum_playing = false; // variable to store whether hum is being played
-#ifdef JUKEBOX
-bool jukebox_play = false; // indicate whether a song is being played in JukeBox mode
-uint8_t jb_track;  // sound file track number in the directory designated for music playback
-#endif
-
-
 
 
 /***************************************************************************************************
@@ -1019,35 +1013,6 @@ void loop() {
 #endif
 
   } // END STANDBY MODE
-#ifdef JUKEBOX
-  /*//////////////////////////////////////////////////////////////////////////////////////////////////////////
-     JUKEBOX MODE (a.k.a. MP3 player mode
-  *//////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  else if (SaberState == S_JUKEBOX) {
-    if (PrevSaberState == S_STANDBY) { // just entered JukeBox mode
-      PrevSaberState = S_JUKEBOX;
-      SinglePlay_Sound(14);  // play intro sound of JukeBox mode
-      delay(2500);
-/*#ifdef PIXELBLADE
-      pixelblade_KillKey_Disable();
-#endif*/
-#if defined LS_INFO
-      Serial.println(F("START JUKEBOX"));
-#endif
-      // start playing the first song
-      jb_track = NR_CONFIGFOLDERFILES + 1;
-      SinglePlay_Sound(jb_track);  // JukeBox dir/files must be directly adjecent to config sounds on the SD card
-    }
-    if (jukebox_play) {
-
-#ifdef PIXELBLADE
-      getColor(storage.sndProfile[storage.soundFont].mainColor);
-      JukeBox_Stroboscope(currentColor);
-#endif
-    }
-  }
-#endif  //  JUKEBOX
 
 } //loop
 

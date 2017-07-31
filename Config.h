@@ -270,7 +270,6 @@ static const uint8_t rgbFactor = 255;
 /*
  * CONFIG MENU PARAMETERS
  */
-//#define JUKEBOX
 
 #if defined PIXELBLADES
 #define CONFIG_BLADE_MAIN_COLOR

@@ -25,10 +25,7 @@ extern bool hum_playing;
 extern int8_t modification;
 extern bool play;
 extern int16_t value;
-#ifdef JUKEBOX
-extern bool jukebox_play;
-extern uint8_t jb_track;
-#endif
+
 //extern bool blasterBlocks;
 extern bool lockuponclash;
 extern int8_t blink;
@@ -213,41 +210,7 @@ void mainClick() {
    ActionModeSubStates=AS_IGNITION;
 		//actionMode = true;
 	}
-#ifdef JUKEBOX
-  else if (SaberState==S_JUKEBOX) {
-#ifdef SINGLEBUTTON
-    #if defined LS_BUTTON_DEBUG
-        Serial.print(F("Play/Pause current song "));Serial.print(jb_track);
-    #endif
-    if (jukebox_play) {
-      // pause the song
-      #if defined LS_BUTTON_DEBUG
-            Serial.println(F("Pause Song"));
-      #endif
-      jukebox_play=false;
-      Pause_Sound();
-    } else {
-      // resume playing the song
-      #if defined LS_BUTTON_DEBUG
-            Serial.println(F("Resume Song"));
-      #endif
-      jukebox_play=true;
-      Resume_Sound();
-    }
-#else // two button setup (main + aux)
-    #if defined LS_BUTTON_DEBUG
-        Serial.print(F("Next JukeBox sound file "));Serial.print(jb_track);
-    #endif    // jump to next song and start playing it
-    if (jb_track==NR_CONFIGFOLDERFILES+NR_JUKEBOXSONGS) {
-      jb_track=NR_CONFIGFOLDERFILES+1;  // fold back to first song in the dir designated for music playback
-    }
-    else {
-      jb_track++;
-    }
-    SinglePlay_Sound(jb_track);
-#endif // SINGLEBUTTON
-  }
-#endif // JUKEBOX
+
 } // mainClick
 
 void mainDoubleClick() {
@@ -381,22 +344,7 @@ void mainDoubleClick() {
         break;
       }
   }
-#ifdef JUKEBOX
-  else if (SaberState==S_STANDBY) {
-      #if defined LS_BUTTON_DEBUG
-            Serial.println(F("Enter JukeBox"));
-      #endif
-      SaberState=S_JUKEBOX;
-      PrevSaberState=S_STANDBY;
-    //ACTION TO DEFINE
-  } else if (SaberState==S_JUKEBOX) {
-//Entering JukeBox mode (MP3 player)
-    SaberState=S_STANDBY;
-    PrevSaberState=S_JUKEBOX;
-// stop/pause track being played
-    Pause_Sound();
-  }
-#endif  // JUKEBOX
+
 
 #else  // not SINGLEBUTTON
 // Change Menu
@@ -576,24 +524,6 @@ void mainLongPressStart() {
   }
 #endif
   }
-#ifdef SINGLEBUTTON
-#ifdef JUKEBOX
-  else if (SaberState==S_JUKEBOX) {
-
-#if defined LS_BUTTON_DEBUG
-    Serial.print(F("Next JukeBox sound file "));Serial.print(jb_track);
-#endif    // jump to next song and start playing it
-    if (jb_track==NR_CONFIGFOLDERFILES+NR_JUKEBOXSONGS) {
-      jb_track=NR_CONFIGFOLDERFILES+1;  // fold back to first song in the dir designated for music playback
-    }
-    else {
-      jb_track++;
-    }
-    SinglePlay_Sound(jb_track);
-  }
-#endif // JUKEBOX
-#endif // SINGLEBUTTON
-
 
 #ifdef SINGLEBUTTON
   else if (SaberState==S_STANDBY) {
@@ -771,25 +701,7 @@ void lockupClick() {
     #endif // PIXELBLADE
 #endif // COLORS
 	}
-#ifdef JUKEBOX
-  else if (SaberState==S_JUKEBOX) {
-    if (jukebox_play) {
-      // pause the song
-      #if defined LS_BUTTON_DEBUG
-            Serial.println(F("Pause Song"));
-      #endif
-      jukebox_play=false;
-      Pause_Sound();
-    } else {
-      // resume playing the song
-      #if defined LS_BUTTON_DEBUG
-            Serial.println(F("Resume Song"));
-      #endif
-      jukebox_play=true;
-      Resume_Sound();
-    }
-  }
-#endif  // JUKEBOX
+
 } // lockupClick
 
 void lockupDoubleClick() {
@@ -814,22 +726,7 @@ void lockupDoubleClick() {
       ActionModeSubStates=AS_HUM;
     }
 	}
-#ifdef JUKEBOX
-	else if (SaberState==S_STANDBY) {
-      #if defined LS_BUTTON_DEBUG
-            Serial.println(F("Enter JukeBox"));
-      #endif
-      SaberState=S_JUKEBOX;
-      PrevSaberState=S_STANDBY;
-		//ACTION TO DEFINE
-	} else if (SaberState==S_JUKEBOX) {
-//Entering JukeBox mode (MP3 player)
-    SaberState=S_STANDBY;
-    PrevSaberState=S_JUKEBOX;
-// stop/pause track being played
-    Pause_Sound();
-  }
-#endif  // JUKEBOX
+
 } // lockupDoubleClick
 
 void lockupLongPressStart() {

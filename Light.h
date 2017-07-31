@@ -66,10 +66,6 @@ CRGB HeatColor( uint8_t temperature);
 uint8_t scale8_video( uint8_t i, uint8_t scale);
 #endif
 
-#ifdef JUKEBOX
-void JukeBox_Stroboscope(CRGB color);
-#endif
-
 #endif
 #ifndef MULTICOLOR_ACCENT_LED
 void accentLEDControl(AccentLedAction_En AccentLedAction);
