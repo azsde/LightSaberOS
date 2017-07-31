@@ -344,16 +344,6 @@ void setup() {
 
   /***** MP6050 MOTION DETECTOR INITIALISATION  *****/
 
-  /***** LED SEGMENT INITIALISATION  *****/
-
-  // initialize ledstrings segments
-  DDRD |= B01101000;
-  DDRB |= B00101110;
-
-  //We shut off all pins that could wearing leds,just to be sure
-  PORTD &= B10010111;
-  PORTB &= B11010001;
-
 #if defined PIXELBLADE
   currentColor.r = 0;
   currentColor.g = 0;
@@ -378,8 +368,8 @@ void setup() {
   /***** BUTTONS INITIALISATION  *****/
 
   // link the Main button functions.
- // mainButton.setClickTicks(CLICK);
-  //mainButton.setPressTicks(PRESS_CONFIG);
+  mainButton.setClickTicks(CLICK);
+  mainButton.setPressTicks(PRESS_CONFIG);
   mainButton.attachClick(mainClick);
   mainButton.attachDoubleClick(mainDoubleClick);
   mainButton.attachLongPressStart(mainLongPressStart);
@@ -409,14 +399,15 @@ void setup() {
 // ====================================================================================
 void loop() {
 
-  //Serial.println(F("coucou"));
+   mainButton.tick();
 
   // if MPU6050 DMP programming failed, don't try to do anything : EPIC FAIL !
   if (!dmpReady) {
+    Serial.println(F("uh oh"));
     return;
   }
 
-   mainButton.tick();
+   
 
   /*//////////////////////////////////////////////////////////////////////////////////////////////////////////
      ACTION MODE HANDLER
