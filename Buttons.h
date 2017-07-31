@@ -31,14 +31,6 @@ void mainLongPressStart();
 void mainLongPress();
 void mainLongPressStop();
 
-#ifndef SINGLEBUTTON
-void lockupClick();
-void lockupDoubleClick();
-void lockupLongPressStart();
-void lockupLongPress();
-void lockupLongPressStop();
-#endif
-
 #endif /* BUTTONS_H_ */
 
 

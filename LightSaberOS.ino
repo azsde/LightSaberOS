@@ -107,10 +107,8 @@ uint8_t randomBlink = 0;
  * Buttons variables
  */
 //OneButton mainButton(MAIN_BUTTON, true);
-OneButton button(12,true);
-#ifndef SINGLEBUTTON
-OneButton lockupButton(LOCKUP_BUTTON, true);
-#endif
+OneButton button(SINGLEBUTTON,true);
+
 // replaced by Saber State Machine Variables
 //bool actionMode = false; // Play with your saber
 //bool configMode = false; // Configure your saber
@@ -408,39 +406,6 @@ void setup() {
   //button.attachDoubleClick(mainDoubleClick);
   //button.attachDuringLongPress(mainLongPressStart);
 
-#ifndef SINGLEBUTTON
-  // link the Lockup button functions.
-  lockupButton.setClickTicks(CLICK);
-  lockupButton.setPressTicks(PRESS_CONFIG);
-  lockupButton.attachClick(lockupClick);
-  lockupButton.attachDoubleClick(lockupDoubleClick);
-  lockupButton.attachLongPressStart(lockupLongPressStart);
-  lockupButton.attachLongPressStop(lockupLongPressStop);
-  lockupButton.attachDuringLongPress(lockupLongPress);
-#endif
-  /***** BUTTONS INITIALISATION  *****/
-
-
-  /***** Quick Mute *****/
-  if (digitalRead(MAIN_BUTTON) == LOW) {
-    if (storage.volume > 0) {
-      storage.volume = 0;
-      Serial.println("Muted");
-    }
-    else {
-      storage.volume = VOL;
-      Serial.println("Unmuted");
-    }
-    //    EEPROM.write(37, storage.volume); // comment this line to make mute setting temporary
-  }
-
-  while (digitalRead(MAIN_BUTTON) == LOW ) {
-    digitalWrite(BUTTONLEDPIN, HIGH);
-    delay(100);
-    digitalWrite(BUTTONLEDPIN, LOW);
-    delay(100);
-  }
-
   /***** DF PLAYER INITIALISATION  *****/
   InitDFPlayer();
 
@@ -474,9 +439,6 @@ void loop() {
 
  button.tick();
 //  mainButton.tick();
-#ifndef SINGLEBUTTON
-  lockupButton.tick();
-#endif
 
   /*//////////////////////////////////////////////////////////////////////////////////////////////////////////
      ACTION MODE HANDLER
@@ -503,9 +465,7 @@ void loop() {
       */
       //attachInterrupt(0, dmpDataReady, RISING);
       // Reduce lockup trigger time for faster lockup response
-#ifndef SINGLEBUTTON
-      lockupButton.setPressTicks(PRESS_ACTION);
-#endif
+
 /*#if defined PIXELBLADE
       pixelblade_KillKey_Disable();
 #endif*/
@@ -957,9 +917,6 @@ void loop() {
       modification = 0;
 #if defined LS_INFO
       Serial.println(F("END ACTION"));
-#endif
-#ifndef SINGLEBUTTON
-      lockupButton.setPressTicks(PRESS_CONFIG);
 #endif
 
 #if defined PIXELBLADE

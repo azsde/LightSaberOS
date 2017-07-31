@@ -88,7 +88,7 @@
 /************************************/
 
 
-#define SINGLEBUTTON
+#define SINGLEBUTTON 12
 
 #if defined PIXELBLADE
 // How many leds in one strip?
@@ -110,9 +110,6 @@ static const uint8_t rgbFactor = 255;
 // need to define DATA_PIN.  For led chipsets that are SPI based (four wires - data, clock,
 // ground, and power), like the LPD8806 define both DATA_PIN and CLOCK_PIN
 #define LED_STRIP_DATA_PIN 13
-//#define STRING1			5
-//#define STRING2 			6
-//#define STRING3 			9
 #endif
 
 /************************************/ // BLADE TYPE
@@ -194,8 +191,6 @@ static const uint8_t rgbFactor = 255;
 #endif //ACCENT_LED
 
 
-
-
 /*
  * MULTICOLOR_ACCENT_LED
  * Enable/disable management of
@@ -223,7 +218,6 @@ static const uint8_t rgbFactor = 255;
 
 #define BUZZMOTOR  17 //A3
 #define BUTTONLEDPIN 16 //A2
-
 
 /*
  * CONFIG MENU PARAMETERS
