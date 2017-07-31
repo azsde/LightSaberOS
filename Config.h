@@ -9,6 +9,8 @@
 #if not defined CONFIG_H_
 #define CONFIG_H_
 
+#include <WS2812.h>
+
 /***** Battery meter settings *****/
 //#define BATTERY_CHECK // comment to disable
 #ifdef BATTERY_CHECK
@@ -16,9 +18,9 @@
 #define BATTERY_READPIN 17 //A3 - read battery level 100kohm from GND, 470kohm from Bat+
 #define LOW_BATTERY 3.3 // low voltage for battery, a 5v Arduino or DIYino requires 3.3v
 #define FULL_BATTERY 4.15 // full voltage for battery, nominally 4.2 for a 3.7v battery
-CRGB C1;  //Low meter color
-CRGB C2;  //middle meter color
-CRGB C3;  //high meter color
+cRGB C1;  //Low meter color
+cRGB C2;  //middle meter color
+cRGB C3;  //high meter color
 #endif
 
 

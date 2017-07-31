@@ -86,9 +86,9 @@ VectorInt16 prevDeltAccel;
 
 #if defined PIXELBLADE
 // Define the array of leds
-CRGB pixels[NUMPIXELS];
-CRGB color;
-CRGB currentColor;
+WS2812 pixels(NUMPIXELS);
+cRGB color;
+cRGB currentColor;
 uint8_t blasterPixel;
 #endif
 
@@ -134,9 +134,9 @@ struct StoreStruct {
     uint8_t clashColor;//colorID
     uint8_t blasterboltColor;//colorID
   #else
-    CRGB mainColor;
-    CRGB clashColor;
-    CRGB blasterboltColor;
+    cRGB mainColor;
+    cRGB clashColor;
+    cRGB blasterboltColor;
   #endif
   }sndProfile[SOUNDFONT_QUANTITY + 2];
 }storage;
@@ -355,8 +355,6 @@ void setup() {
   PORTB &= B11010001;
 
 #if defined PIXELBLADE
-  FastLED.addLeds<WS2812B, LED_STRIP_DATA_PIN, GRB>(pixels, NUMPIXELS).setCorrection(TypicalLEDStrip);
-  FastLED.setBrightness(MAX_BRIGHTNESS); // This initializes the NeoPixel library.
   currentColor.r = 0;
   currentColor.g = 0;
   currentColor.b = 0;
@@ -417,7 +415,7 @@ void loop() {
   if (!dmpReady) {
     return;
   }
-  
+
    mainButton.tick();
 
   /*//////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1180,17 +1178,17 @@ float batCheck() {
 }
 #endif
 /*
-void deployBlade(CRGB color) {
+void deployBlade(cRGB color) {
   for (uint16_t i = 0 ; i < NUMPIXELS ; i ++ ) {
-      pixels[i] = color;
-      FastLED.show();
+      pixels.set_crgb_at(i, color);
+      pixels.sync();
       delay(10);
   }
 }
 
 void retractBlade() {
   for (uint16_t i = NUMPIXELS ; i > 0 ; i -- ) {
-      pixels[i] = CRGB::Black;
-      FastLED.show();
+      pixels[i] = cRGB::Black;
+      pixels.sync();
       delay(10);
   }*/

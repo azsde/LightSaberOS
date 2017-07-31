@@ -10,7 +10,8 @@
 #define LIGHT_H_
 
 #include <Arduino.h>
-#include "FastLED.h"
+//#include "FastLED.h"
+
 #include "Config.h"
 
 
@@ -39,30 +40,30 @@ void BladeMeter (int meterLevel);
 //void pixelblade_KillKey_Enable();
 //void pixelblade_KillKey_Disable();
 
-void lightOn(CRGB color, int8_t StartPixel=-1, int8_t StopPixel=-1);
+void lightOn(cRGB color, int8_t StartPixel=-1, int8_t StopPixel=-1);
 void lightOff();
 
-void lightIgnition(CRGB color, uint16_t time, uint8_t type);
+void lightIgnition(cRGB color, uint16_t time, uint8_t type);
 void lightRetract( uint16_t time, uint8_t type);
 
 #ifdef COLORS
 void lightBlasterEffect( uint8_t pixel, uint8_t range, uint8_t SndFnt_MainColor);
 #else
-void lightBlasterEffect( uint8_t pixel, uint8_t range, CRGB SndFnt_MainColor);
+void lightBlasterEffect( uint8_t pixel, uint8_t range, cRGB SndFnt_MainColor);
 #endif
 void lightFlicker( uint8_t value = 0,uint8_t AState=0);
 
 #ifdef COLORS
 void getColor(uint8_t color); //getColor
 #else
-void getColor(CRGB color); //getColor
-void ColorMixing(CRGB colorID, int8_t mod, uint8_t maxBrightness=MAX_BRIGHTNESS, bool Saturate=false);
+void getColor(cRGB color); //getColor
+void ColorMixing(cRGB colorID, int8_t mod, uint8_t maxBrightness=MAX_BRIGHTNESS, bool Saturate=false);
 #endif
 void RampPixels(uint16_t RampDuration, bool DirectionUpDown);
 
 #ifdef FIREBLADE
 void FireBlade();
-CRGB HeatColor( uint8_t temperature);
+cRGB HeatColor( uint8_t temperature);
 uint8_t scale8_video( uint8_t i, uint8_t scale);
 #endif
 
@@ -70,7 +71,7 @@ uint8_t scale8_video( uint8_t i, uint8_t scale);
 #ifndef MULTICOLOR_ACCENT_LED
 void accentLEDControl(AccentLedAction_En AccentLedAction);
 #else
-void accentLEDControl(AccentLedAction_En AccentLedAction, CRGB color);
+void accentLEDControl(AccentLedAction_En AccentLedAction, cRGB color);
 #endif
 void PWM();
 #endif /* LIGHT_H_ */

@@ -47,9 +47,9 @@ static byte heat[NUMPIXELS];
 #if defined PIXELBLADE
 static uint8_t flickerPos = 0;
 static long lastFlicker = millis();
-extern CRGB pixels[NUMPIXELS];
+extern WS2812 pixels;
 
-extern CRGB currentColor;
+extern cRGB currentColor;
 
 /*void pixelblade_KillKey_Enable() {
   // cut power to the neopixels stripes by disconnecting their GND signal using the LS pins
@@ -72,43 +72,43 @@ void pixelblade_KillKey_Disable() {
     digitalWrite(11, HIGH);
 }*/
 
-void lightOn(CRGB color, int8_t StartPixel, int8_t StopPixel) {
+void lightOn(cRGB color, int8_t StartPixel, int8_t StopPixel) {
 	// Light On
 	if (StartPixel == -1 or StopPixel==-1 or StopPixel<StartPixel or StartPixel>NUMPIXELS or StopPixel>NUMPIXELS) {  // if neither start nor stop is defined or invalid range, go through the whole stripe
 		for (uint8_t i = 0; i < NUMPIXELS; i++) {
-			pixels[i] = color;
+			pixels.set_crgb_at(i, color);
 		}
 	} else {
     for (uint8_t i = StartPixel-1; i < StopPixel; i++) {
-      pixels[i] = color;
+      pixels.set_crgb_at(i, color);
     }
 	}
-	FastLED.show();
+	pixels.sync();
 } //lightOn
 
 void lightOff() {
 // shut Off
-	CRGB value;
+	cRGB value;
 	value.b = 0;
 	value.g = 0;
 	value.r = 0; // RGB Value -> Off
 	for (uint16_t i = 0; i < NUMPIXELS; i++) {
-		pixels[i] = value;
+		pixels.set_crgb_at(i, value);
 	}
-	FastLED.show();
+	pixels.sync();
 } //lightOff
 
-void lightIgnition(CRGB color, uint16_t time, uint8_t type) {
-	CRGB value = color;
+void lightIgnition(cRGB color, uint16_t time, uint8_t type) {
+	cRGB value = color;
 	//switch (type) {
 	//case 0:
 // Light up the ledstrings Movie-like
     //RampPixels(time, true);
 		for (uint16_t i = 0; i < NUMPIXELS; i++) {
-			pixels[i] = value;
+			pixels.set_crgb_at(i, value);
 			i++;
-			pixels[i] = value;
-			FastLED.show();
+			pixels.set_crgb_at(i, value);
+			pixels.sync();
       //delay(time/NUMPIXELS);
 			delayMicroseconds((time * 1000) / NUMPIXELS);
 		}
@@ -134,7 +134,7 @@ void lightRetract(uint16_t time, uint8_t type) {
 	//switch (type) {
 	//case 0:
 		// Light off the ledstrings Movie Like
-		CRGB value;
+		cRGB value;
 		value.b = 0;
 		value.g = 0;
 		value.r = 0; // RGB Value -> Off
@@ -144,10 +144,10 @@ void lightRetract(uint16_t time, uint8_t type) {
 			//Not uint8_t here because Arduino nano clones did go
 			// on an infinite loop for no reason making the board
 			// crash at some point.
-			pixels[i] = value;
+			pixels.set_crgb_at(i, value);
 			i--;
-			pixels[i] = value;
-			FastLED.show();
+			pixels.set_crgb_at(i, value);
+			pixels.sync();
 			delayMicroseconds((time * 1000) / NUMPIXELS);
 		}
 		//break;
@@ -169,8 +169,8 @@ void lightRetract(uint16_t time, uint8_t type) {
 }				//lightRetract
 
 void lightBlasterEffect(uint8_t pixel, uint8_t range, uint8_t SndFnt_MainColor) {
-  CRGB blastcolor;
-  CRGB fadecolor;
+  cRGB blastcolor;
+  cRGB fadecolor;
   blastcolor.r=currentColor.r;
   blastcolor.g=currentColor.g;
   blastcolor.g=currentColor.b;
@@ -194,20 +194,20 @@ void lightBlasterEffect(uint8_t pixel, uint8_t range, uint8_t SndFnt_MainColor) 
       //fadecolor.r=((range-i)*blastcolor.r + (i*currentColor.r))/range;
       //fadecolor.g=((range-i)*blastcolor.g + (i*currentColor.g))/range;
       //fadecolor.b=((range-i)*blastcolor.b + (i*currentColor.b))/range;
-      pixels[j] = fadecolor;
+      pixels.set_crgb_at(j, fadecolor);
 
       if (j==i) {
       //if ((j==pixel-i) or (j==pixel+i)) {
-        pixels[pixel-j] = blastcolor;
-        pixels[pixel+j] = blastcolor;
+        pixels.set_crgb_at(pixel-j, blastcolor);
+        pixels.set_crgb_at(pixel+j, blastcolor);
       }
       else {
       //else if ((j<pixel-i) or (j>pixel+i)){
-        pixels[pixel-j] = currentColor;
-        pixels[pixel+j] = currentColor;
+        pixels.set_crgb_at(pixel-j, currentColor);
+        pixels.set_crgb_at(pixel+j, currentColor);
       }
   	}
-  	FastLED.show();
+  	pixels.sync();
     delay(BLASTER_FX_DURATION/(2*range));  // blast deflect should last for ~500ms
   }
 }
@@ -226,7 +226,7 @@ void lightFlicker(uint8_t value,uint8_t AState) {
     Fire_Sparking=100;
   }
     FireBlade();
-    FastLED.show(); // Sends the data to the LEDs
+    pixels.sync(); // Sends the data to the LEDs
 #else
 //  if (not value) {
 // Calculation of the amount of brightness to fade
@@ -253,7 +253,7 @@ brightness = flickFactor;
 //	switch (type) {
 //	case 0:
 	// std Flickering
-  CRGB color;
+  cRGB color;
   if (AState==AS_BLADELOCKUP) { //animate blade in lockup mode
     // gives 25% chance to flick larger range for better randomization
     int lockupFlick = random(0,39);
@@ -282,16 +282,16 @@ brightness = flickFactor;
 
   for (uint16_t i = 0; i <= NUMPIXELS; i++) {
 //    int instabilityFactor = random (0,100);
-//    CRGB instabilityColor;
+//    cRGB instabilityColor;
 //    instabilityColor.r =255;
 //    instabilityColor.g=255;
 //    instabilityColor.b=255;
 //    if ( !instabilityFactor ) { pixels[i] = instabilityColor); }
 //    else {
-      pixels[i] = color;
+      pixels.set_crgb_at(i, color);
 //    }
   }
-	FastLED.show();
+	pixels.sync();
 
 //		break;
 	/*
@@ -374,7 +374,7 @@ void getColor(uint8_t color) {
 /*// neopixel ramp code from jbkuma
 void RampPixels(uint16_t RampDuration, bool DirectionUpDown) {
   unsigned long ignitionStart = millis();  //record start of ramp function
-  CRGB value;
+  cRGB value;
 #ifdef FIREBLADE
   for (unsigned int i=0; i<NUMPIXELS; (i=i+5)) { // turn on/off one LED at a time
      FireBlade();
@@ -389,7 +389,7 @@ void RampPixels(uint16_t RampDuration, bool DirectionUpDown) {
           pixels[j] = value; // Set value at LED found at index j
         }
       }
-      FastLED.show(); // Sends the data to the LEDs
+      pixels.sync(); // Sends the data to the LEDs
     }
 #else
   for (unsigned int i = 0; i < NUMPIXELS; i = NUMPIXELS*(millis()-ignitionStart)/RampDuration) { // turn on/off the number of LEDs that match rap timing
@@ -412,7 +412,7 @@ void RampPixels(uint16_t RampDuration, bool DirectionUpDown) {
       }
       pixels[j] = value;
     }
-     FastLED.show(); // Sends the data to the LEDs
+     pixels.sync(); // Sends the data to the LEDs
      delay(RampDuration/NUMPIXELS); //match the ramp duration to the number of pixels in the string
   }
 #endif
@@ -473,16 +473,16 @@ void FireBlade() {
     // Step 4.  Map from heat cells to LED colors
 #ifdef CROSSGUARDSABER
     for( int j = 0; j < CG_STRIPE; j++) {
-      CRGB color = HeatColor( heat_cg[j]);
+      cRGB color = HeatColor( heat_cg[j]);
       //if( gReverseDirection ) {
       //  pixelnumber = (CG_STRIPE-1) - j;
       //} else {
       //  pixelnumber = j;
       //}
-      LED.set_CRGB_at(j, color); // Set value at LED found at index j
+      LED.set_cRGB_at(j, color); // Set value at LED found at index j
     }
     for( int j = CG_STRIPE; j < CG_STRIPE + MN_STRIPE; j++) {
-      CRGB color = HeatColor( heat[j]);
+      cRGB color = HeatColor( heat[j]);
       //if( gReverseDirection ) {
       //  pixelnumber = (CG_STRIPE + MN_STRIPE-1) - j;
       //} else {
@@ -492,7 +492,7 @@ void FireBlade() {
     }
 #else
     for( int j = 0; j < NUMPIXELS; j++) {
-      CRGB color = HeatColor( heat[j]);
+      cRGB color = HeatColor( heat[j]);
       int pixelnumber;
       //if( gReverseDirection ) {
       //  pixelnumber = (NUMPIXELS-1) - j;
@@ -504,7 +504,7 @@ void FireBlade() {
 #endif
 }
 
-// CRGB HeatColor( uint8_t temperature)
+// cRGB HeatColor( uint8_t temperature)
 //
 // Approximates a 'black body radiation' spectrum for
 // a given 'heat' level.  This is useful for animations of 'fire'.
@@ -515,9 +515,9 @@ void FireBlade() {
 // On AVR/Arduino, this typically takes around 70 bytes of program memory,
 // versus 768 bytes for a full 256-entry RGB lookup table.
 
-CRGB HeatColor( uint8_t temperature)
+cRGB HeatColor( uint8_t temperature)
 {
-    CRGB heatcolor;
+    cRGB heatcolor;
 
     // Scale 'heat' down from 0-255 to 0-191,
     // which can then be easily divided into three
@@ -658,13 +658,13 @@ void fadeAccent() {
 #endif
 
 #ifdef MULTICOLOR_ACCENT_LED
-void accentLEDControl( AccentLedAction_En AccentLedAction, CRGB color) {
+void accentLEDControl( AccentLedAction_En AccentLedAction, cRGB color) {
 
   /*Serial.print(F("Color R: ")); Serial.println(color.r);
   Serial.print(F("Color G: ")); Serial.println(color.g);
   Serial.print(F("Color B: ")); Serial.println(color.b);
 
-  CRGB value;
+  cRGB value;
   #ifdef COMMON_ANODE
   value.r = 255 - color.r;
   value.g = 255 - color.g;
@@ -719,7 +719,7 @@ void BladeMeter (int meterLevel) {  //expects input of 0-100
   if (meterLevel >= 100) { meterLevel = 100; }
 
 #ifdef PIXELBLADE // light blade as 3 color meter proportionate to length
-  CRGB value;
+  cRGB value;
   //set first pixel for accent LED compatability
   if (meterLevel < 30) {
     value.r = MAX_BRIGHTNESS/2;
@@ -734,7 +734,8 @@ void BladeMeter (int meterLevel) {  //expects input of 0-100
     value.g = MAX_BRIGHTNESS/2;
     value.b = 0;
   }
-  pixels[0] = value;
+  pixels.set_crgb_at(0, value);
+  
 
   //set rest of blade
   for (unsigned int i = 1; i < NUMPIXELS; i++) { // turn on/off one LED at a time
@@ -757,9 +758,9 @@ void BladeMeter (int meterLevel) {  //expects input of 0-100
       value.g=0;
       value.b=0;
       }
-      pixels[i] = value;
+      pixels.set_crgb_at(i, value);
     }
-    FastLED.show(); // Sends the data to the LEDs
+    pixels.sync(); // Sends the data to the LEDs
 //    delay(3);
 #endif
 }

@@ -34,8 +34,8 @@ extern uint8_t menu;
 extern bool enterMenu;
 
 #if defined PIXELBLADE
-extern CRGB color;
-extern CRGB currentColor;
+extern cRGB color;
+extern cRGB currentColor;
 #endif
 extern uint8_t blaster;
 extern void HumRelaunch();
@@ -64,9 +64,9 @@ extern struct StoreStruct {
     uint8_t clashColor;//colorID
     uint8_t blasterboltColor;//colorID
   #else
-    CRGB mainColor;
-    CRGB clashColor;
-    CRGB blasterboltColor;
+    cRGB mainColor;
+    cRGB clashColor;
+    cRGB blasterboltColor;
   #endif
   }sndProfile[SOUNDFONT_QUANTITY + 2];
 }storage;

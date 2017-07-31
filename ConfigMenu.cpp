@@ -45,11 +45,11 @@ void confParseValue(uint16_t variable, uint16_t min, uint16_t max,
 /*#ifdef COLORS
 void confMenuStart(uint16_t variable, uint16_t sound, uint8_t menu) {
 #else
-void confMenuStart(CRGB variable, uint16_t sound, uint8_t menu) {
+void confMenuStart(cRGB variable, uint16_t sound, uint8_t menu) {
 #endif
   extern uint8_t ledPins[];
 #if defined PIXELBLADE
-	extern CRGB currentColor;
+	extern cRGB currentColor;
 #endif
 	extern bool enterMenu;
 	if (enterMenu) {
