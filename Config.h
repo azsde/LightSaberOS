@@ -57,7 +57,6 @@
  * blocks from compile
  *************************************/
 //#define LEDSTRINGS
-//#define STAR_LED
 #define PIXELBLADE
 
 /************************************/
@@ -88,9 +87,6 @@
  *************************************/
 #if defined LEDSTRINGS
 #define CONFIG_VERSION     "L01"
-#endif
-#if defined STAR_LED
-#define CONFIG_VERSION     "L02"
 #endif
 #if defined PIXELBLADE
 #define CONFIG_VERSION     "L03"
@@ -127,17 +123,6 @@ static const uint8_t rgbFactor = 255;
 //#define STRING3 			9
 #endif
 
-#if defined STAR_LED
-
-static const uint8_t rgbFactor = 100;
-
-/* COLORS
- * Number of colors to chose from
- * Range : 6<->600
- * Default: 48
- */
-#define COLORS		 		3
-#endif
 /************************************/ // BLADE TYPE
 
 
@@ -248,19 +233,6 @@ static const uint8_t rgbFactor = 100;
     #define LS3      9
   #endif
 #endif
-#if defined STAR_LED
-
-  #ifdef DIYINO_PRIME
-    #define LED_RED       3
-    #define LED_GREEN       5
-    #define LED_BLUE      6
-  #else if DIYINO_STARDUST
-    #define LED_RED 			5
-    #define LED_GREEN 			6
-    #define LED_BLUE 			9
-  #endif
-#endif
-
 
 #ifdef DIYINO_PRIME
   #define MP3_PSWITCH 15
@@ -342,10 +314,6 @@ static const uint8_t rgbFactor = 100;
  * CONFIG MENU PARAMETERS
  */
 //#define JUKEBOX
-#if defined STAR_LED
-#define CONFIG_BLADE_MAIN_COLOR
-#define CONFIG_BLADE_CLASH_COLOR
-#endif
 
 #if defined PIXELBLADES
 #define CONFIG_BLADE_MAIN_COLOR

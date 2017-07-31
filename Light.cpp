@@ -309,264 +309,8 @@ void JukeBox_Stroboscope(uint8_t ledPins[]) {
   //delay(50);
 }
 #endif
-
-#endif
-#if defined STAR_LED
-
-extern CRGB currentColor;
-
-void lightOn(uint8_t ledPins[], CRGB color) {
-// Light On
-    analogWrite(ledPins[0], MAX_BRIGHTNESS * color.r / rgbFactor); // RED
-    analogWrite(ledPins[1], MAX_BRIGHTNESS * color.g / rgbFactor); // GREEN
-    analogWrite(ledPins[2], MAX_BRIGHTNESS * color.b / rgbFactor); // BLUE
-} //lightOn
-
-void lightOff(uint8_t ledPins[]) {
-// shut Off
-	for (uint8_t i = 0; i <= 2; i++) {
-		analogWrite(ledPins[i], LOW);
-	}
-} //lightOff
-
-#ifndef COLORS
-void ColorMixing(CRGB colorID, int8_t mod, uint8_t maxBrightness, bool Saturate) {
-  CRGB mixedColor;
-  mixedColor.r=colorID.r;
-  mixedColor.g=colorID.g;
-  mixedColor.b=colorID.b;
-      switch(mod) {
-        case(0):
-          if (Saturate) {
-            mixedColor.r=maxBrightness;
-          }
-          else {
-            mixedColor.r=constrain(colorID.r+1,0,255);
-          }
-          break;
-        case(1):
-          if (Saturate) {
-            mixedColor.r=0;
-          }
-          else {
-            mixedColor.r=constrain(colorID.r-1,0,255);
-          }
-          break;
-        case(2):
-          if (Saturate) {
-            mixedColor.g=maxBrightness;
-          }
-          else {
-            mixedColor.g=constrain(colorID.g+1,0,255);
-          }
-          break;
-        case(3):
-          if (Saturate) {
-            mixedColor.g=0;
-          }
-          else {
-            mixedColor.g=constrain(colorID.g-1,0,255);
-          }
-          break;
-        case(4):
-          if (Saturate) {
-            mixedColor.b=maxBrightness;
-          }
-          else {
-            mixedColor.b=constrain(colorID.b+1,0,255);
-          }
-          break;
-        case(5):
-          if (Saturate) {
-            mixedColor.b=0;
-          }
-          else {
-            mixedColor.b=constrain(colorID.b-1,0,255);
-          }
-          break;
-      }
-        getColor(mixedColor);
-        //#if defined LS_DEBUG
-          //Serial.print(storage.sndProfile[storage.soundFont].mainColor);
-          Serial.print("\tR:");
-          Serial.print(currentColor.r);
-          Serial.print("\tG:");
-          Serial.print(currentColor.g);
-          Serial.print(" \tB:");
-          Serial.println(currentColor.b);
-        //#endif
-      // LED_RED, LED_GREEN, LED_BLUE
-      analogWrite(LED_RED,currentColor.r); // RED
-      analogWrite(LED_GREEN, currentColor.g); // GREEN
-      analogWrite(LED_BLUE, currentColor.b); // BLUE
-}
-#endif // not COLORS
-
-void lightIgnition(uint8_t ledPins[], CRGB color, uint16_t time) {
-
-// Fade in to Maximum brightness
-	for (uint8_t fadeIn = 255; fadeIn > 0; fadeIn--) {
-    analogWrite(ledPins[0], (MAX_BRIGHTNESS / fadeIn) * color.r / rgbFactor); // RED
-    analogWrite(ledPins[1], (MAX_BRIGHTNESS / fadeIn) * color.g / rgbFactor); // GREEN
-    analogWrite(ledPins[2], (MAX_BRIGHTNESS / fadeIn) * color.b / rgbFactor); // BLUE
-		delay(time / 255);
-	}
-} //lightIgnition
-
-void lightRetract(uint8_t ledPins[], CRGB color, uint16_t time) {
-// Fade out
-
-	for (uint8_t fadeOut = 1; fadeOut < 255; fadeOut++) {
-    analogWrite(ledPins[0], (MAX_BRIGHTNESS / fadeOut) * color.r / rgbFactor); // RED
-    analogWrite(ledPins[1], (MAX_BRIGHTNESS / fadeOut) * color.g / rgbFactor); // GREEN
-    analogWrite(ledPins[2], (MAX_BRIGHTNESS / fadeOut) * color.b / rgbFactor); // BLUE
-		delay(time / 255);
-	}
-
-	lightOff(ledPins);
-} //lightRetract
-
-void lightFlicker(uint8_t ledPins[], CRGB color, uint8_t value) {
-	uint8_t brightness;
-	if (not value) {
-// Calculation of the amount of brightness to fade
-		brightness = MAX_BRIGHTNESS
-		- (abs(analogRead(SPK1) - analogRead(SPK2)));
-	} else {
-		brightness = value;
-	}
-#if defined LS_HEAVY_DEBUG
-	Serial.print(F("Brightness: "));
-	Serial.print(brightness);
-	Serial.print(F("   SPK1: "));
-	Serial.print(analogRead(SPK1));
-	Serial.print(F("   SPK2: "));
-	Serial.println(analogRead(SPK2));
-#endif
-    analogWrite(ledPins[0], (brightness * color.r / rgbFactor)); // RED
-    analogWrite(ledPins[1], (brightness * color.g / rgbFactor)); // GREEN
-    analogWrite(ledPins[2], (brightness * color.b / rgbFactor)); // BLUE
-} //lightFlicker
-
-
-#ifdef COLORS
-void getColor(uint8_t color) {
-#else //  not COLOR
-void getColor(CRGB color) {
 #endif
 
-#ifdef COLORS
-  //currentColor[3] = colorID;
-  Serial.print(F("Color : "));
-  Serial.print(F(color));
-  switch (color) {
-  case 0:
-//Red
-    currentColor.r = 100;
-    currentColor.g = 0;
-    currentColor.b = 0;
-    break;
-  case 1:
-//Green
-    currentColor.r = 0;
-    currentColor.g = 100;
-    currentColor.b = 0;
-    break;
-  case 2:
-//Blue
-    currentColor.r = 0;
-    currentColor.g = 0;
-    currentColor.b = 100;
-    break;
-  case 3:
-//Aqua
-    currentColor.r = 0;
-    currentColor.g = 100;
-    currentColor.b = 100;
-    break;
-  case 4:
-//Blue
-    currentColor.r = 0;
-    currentColor.g = 0;
-    currentColor.b = 100;
-    break;
-  case 5:
-//Fuschia
-    currentColor.r = 100;
-    currentColor.g = 0;
-    currentColor.b = 100;
-    break;
-
-  case 6:
-//DarkGrey
-    currentColor.r = 100;
-    currentColor.g = 100;
-    currentColor.b = 100;
-    break;
-  case 7:
-//DarkOrange
-    currentColor.r = 1000;
-    currentColor.g = 76;
-    currentColor.b = 0;
-    break;
-  case 8:
-//DarkViolet
-    currentColor.r = 100;
-    currentColor.g = 0;
-    currentColor.b = 100;
-    break;
-  case 9:
-//DodgerBlue
-    currentColor.r = 24;
-    currentColor.g = 80;
-    currentColor.b = 100;
-    break;
-  case 10:
-//Gold
-    currentColor.r = 100;
-    currentColor.g = 120;
-    currentColor.b = 0;
-    break;
-  case 11:
-//GoldenRod
-    currentColor.r = 100;
-    currentColor.g = 112;
-    currentColor.b = 24;
-    break;
-  case 12:
-//Indigo
-    currentColor.r = 80;
-    currentColor.g = 0;
-    currentColor.b = 100;
-    break;
-  case 13:
-//LightGreen
-    currentColor.r = 90;
-    currentColor.g = 100;
-    currentColor.b = 90;
-    break;
-
-  default:
-// White (if enough voltage)
-    currentColor.r = 50;
-    currentColor.g = 50;
-    currentColor.b = 50;
-    break;
-  }
-#else  // not COLOR
-    currentColor.r = color.r;
-    currentColor.g = color.g;
-    currentColor.b = color.b;
-#endif
-} //getColor
-#ifdef JUKEBOX
-void JukeBox_Stroboscope() {
-
-}
-#endif
-
-
-#endif
 
 #if defined PIXELBLADE
 static uint8_t flickerPos = 0;
@@ -1380,7 +1124,7 @@ void accentLEDControl( AccentLedAction_En AccentLedAction, CRGB color) {
   value.g = 255 - color.g;
   value.b = 255 - color.b;
   #endif
-    
+
   if (AccentLedAction==AL_PULSE) {
     #if defined HARD_ACCENT
         if (millis() - lastAccent <= 400) {
@@ -1405,7 +1149,7 @@ void accentLEDControl( AccentLedAction_En AccentLedAction, CRGB color) {
     #endif
   }
   else if (AccentLedAction==AL_ON) {
-  
+
   digitalWrite(MULTICOLOR_ACCENT_LED,HIGH);
   #ifdef COMMON_ANODE
   analogWrite(RED_ACCENT_LED,value.r);
@@ -1438,13 +1182,6 @@ void BladeMeter (int meterLevel) {  //expects input of 0-100
         digitalWrite(ledPins[i], LOW);
       }
     }
-#endif
-
-#ifdef STAR_LED // light led in gradient from red to green
-  analogWrite(LED_RED, MAX_BRIGHTNESS * (100 - meterLevel) * 255 / 100 / rgbFactor);
-  analogWrite(LED_GREEN, MAX_BRIGHTNESS * meterLevel * 255 / 100 / rgbFactor);
-//  unsigned int meterGreen = meterLevel * 255 / 100;
-//  unsigned int meterRed = (100 - meterLevel) * 255 / 100;
 #endif
 
 #ifdef PIXELBLADE // light blade as 3 color meter proportionate to length

@@ -50,28 +50,6 @@ void lightFlicker(uint8_t ledPins[], uint8_t type, uint8_t value = 0,uint8_t ASt
     void JukeBox_Stroboscope(uint8_t ledPins[]);
   #endif
 #endif
-#if defined STAR_LED
-
-void lightOn(uint8_t ledPins[], CRGB color);
-void lightOff(uint8_t ledPins[]);
-#ifndef COLORS
-void ColorMixing(CRGB colorID, int8_t mod, uint8_t maxBrightness=MAX_BRIGHTNESS, bool Saturate=false);
-#endif
-void lightIgnition(uint8_t ledPins[], CRGB color, uint16_t time);
-void lightRetract(uint8_t ledPins[], CRGB color, uint16_t time);
-
-void lightFlicker(uint8_t ledPins[], CRGB color, uint8_t value = 0);
-
-#ifdef COLORS
-void getColor(uint8_t color); //getColor
-#else
-void getColor(CRGB color); //getColor
-#endif
-
-#ifdef JUKEBOX
-    void JukeBox_Stroboscope();
-#endif
-#endif  //  STAR_LED
 
 #if defined PIXELBLADE
 

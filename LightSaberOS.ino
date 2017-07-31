@@ -107,11 +107,7 @@ VectorInt16 prevDeltAccel;
 #endif
 uint8_t blasterPin;
 #endif
-#if defined STAR_LED
-uint8_t ledPins[] = {LED_RED, LED_GREEN, LED_BLUE};
-CRGB currentColor;
-//uint8_t currentColor[4]; //0:Red 1:Green 2:Blue 3:ColorID
-#endif
+
 #if defined PIXELBLADE
 #ifdef DIYINO_PRIME
   uint8_t ledPins[] = {LS1, LS2, LS3, LS4, LS5, LS6};
@@ -164,26 +160,6 @@ struct StoreStruct {
 	uint8_t volume;     // 0 to 31
 	uint8_t soundFont; // as many Sound font you have defined in Soundfont.h Max:253
 } storage;
-#endif
-#if defined STAR_LED
-struct StoreStruct {
-	// This is for mere detection if they are our settings
-	char version[5];
-	// The settings
-	uint8_t volume;// 0 to 31
-	uint8_t soundFont;// as many as Sound font you have defined in Soundfont.h Max:253
-  struct Profile {
-  #ifdef COLORS
-    uint8_t mainColor;  //colorID
-    uint8_t clashColor;//colorID
-    uint8_t blasterboltColor;//colorID
-  #else
-    CRGB mainColor;
-    CRGB clashColor;
-    CRGB blasterboltColor;
-  #endif
-  }sndProfile[SOUNDFONT_QUANTITY + 2];
-}storage;
 #endif
 
 #if defined PIXELBLADE
@@ -244,25 +220,7 @@ void setup() {
 		storage.volume = VOL;
 #if defined LEDSTRINGS
 #endif
-#if defined STAR_LED
-    for (uint8_t i=2; i<SOUNDFONT_QUANTITY+2;i++){
-      #ifdef COLORS
-      storage.sndProfile[i].mainColor=1;
-      storage.sndProfile[i].clashColor=1;
-      storage.sndProfile[i].blasterboltColor=1;
-      #else
-      storage.sndProfile[i].mainColor.r=20;
-      storage.sndProfile[i].mainColor.g=20;
-      storage.sndProfile[i].mainColor.b=20;
-      storage.sndProfile[i].clashColor.r=20;
-      storage.sndProfile[i].clashColor.g=20;
-      storage.sndProfile[i].clashColor.b=20;
-      storage.sndProfile[i].blasterboltColor.r=20;
-      storage.sndProfile[i].blasterboltColor.g=20;
-      storage.sndProfile[i].blasterboltColor.b=20;
-      #endif
-    }
-#endif
+
 #if defined PIXELBLADE
     for (uint8_t i=2; i<SOUNDFONT_QUANTITY+2;i++){
       #ifdef COLORS
@@ -439,11 +397,6 @@ void setup() {
   PORTD &= B10010111;
   PORTB &= B11010001;
 
-#if defined STAR_LED
-  //initialise start color
-  getColor(storage.sndProfile[storage.soundFont].mainColor);
-#endif
-
 #if defined PIXELBLADE
   FastLED.addLeds<WS2812B, LED_STRIP_DATA_PIN, GRB>(pixels, NUMPIXELS).setCorrection(TypicalLEDStrip);
   FastLED.setBrightness(MAX_BRIGHTNESS); // This initializes the NeoPixel library.
@@ -485,7 +438,7 @@ void setup() {
   mainButton.attachLongPressStop(mainLongPressStop);
   mainButton.attachDuringLongPress(mainLongPress);*/
 
-  // link the doubleclick function to be called on a doubleclick event.   
+  // link the doubleclick function to be called on a doubleclick event.
   //
   //button.attachDoubleClick(mainDoubleClick);
   //button.attachDuringLongPress(mainLongPressStart);
@@ -575,12 +528,12 @@ void loop() {
      ACTION MODE HANDLER
   */ /////////////////////////////////////////////////////////////////////////////////////////////////////////
   if (SaberState == S_SABERON) {
-    
+
       // In case we want to time the loop
       //Serial.print(F("Action Mode"));
       //Serial.print(F(" time="));
       //Serial.println(millis());
-    
+
     if (ActionModeSubStates != AS_HUM) { // needed for hum relauch only in case it's not already being played
       hum_playing = false;
     }
@@ -613,9 +566,7 @@ void loop() {
       lightIgnition(ledPins, soundFont.getPowerOnTime(),
                     soundFont.getPowerOnEffect());
 #endif
-#if defined STAR_LED
-      lightIgnition(ledPins, currentColor, soundFont.getPowerOnTime());
-#endif
+
 #if defined PIXELBLADE
       /*for (uint8_t i = 0; i <= 5; i++) {
         digitalWrite(ledPins[i], HIGH);
@@ -684,10 +635,7 @@ void loop() {
              THIS IS A CLASH  !
           */
           ActionModeSubStates = AS_CLASH;
-#if defined STAR_LED
-          getColor(storage.sndProfile[storage.soundFont].clashColor);
-          lightOn(ledPins, currentColor);
-#endif
+
 #if defined LEDSTRINGS
           for (uint8_t i = 0; i <= 5; i++) {
             analogWrite(ledPins[i], 255);
@@ -724,10 +672,7 @@ void loop() {
         blink = 0;
         analogWrite(ledPins[blasterPin], LOW);
 #endif
-#if defined STAR_LED
-        getColor(storage.sndProfile[storage.soundFont].blasterboltColor);
-        lightOn(ledPins, currentColor);
-#endif //STAR_LED
+
 #if defined PIXELBLADE
 #ifdef FIREBLADE
         getColor(14);
@@ -968,11 +913,6 @@ void loop() {
       lightFlicker(ledPins, soundFont.getFlickerEffect(), 0, ActionModeSubStates);
 #endif
 
-#ifdef STAR_LED
-      getColor(storage.sndProfile[storage.soundFont].mainColor);
-      lightFlicker(ledPins, currentColor, 0);
-#endif
-
 #ifdef PIXELBLADE
       getColor(storage.sndProfile[storage.soundFont].mainColor);
       //lightFlicker(0, ActionModeSubStates);
@@ -1032,7 +972,7 @@ void loop() {
 #endif
     }
 #ifndef COLORS
-#if defined(PIXELBLADE) or defined(STAR_LED)
+#if defined(PIXELBLADE)
     if (ConfigModeSubStates == CS_MAINCOLOR or ConfigModeSubStates == CS_CLASHCOLOR or ConfigModeSubStates == CS_BLASTCOLOR) {
       modification = GravityVector();
       //Serial.println(modification);
@@ -1058,11 +998,9 @@ void loop() {
       }
       #ifdef PIXELBLADE
         lightOn(currentColor, NUMPIXELS - 5, NUMPIXELS);
-      #else if STAR_LED
-        //lightOn(currentColor, NUMPIXELS - 5, NUMPIXELS);
       #endif
     }
-#endif // PIXELBLADE or STAR_LED
+#endif // PIXELBLADE
 #endif // not COLORS
 
   } //END CONFIG MODE HANDLER
@@ -1087,9 +1025,7 @@ void loop() {
 #ifndef SINGLEBUTTON
       lockupButton.setPressTicks(PRESS_CONFIG);
 #endif
-#if defined STAR_LED
-      lightRetract(ledPins, currentColor, soundFont.getPowerOffTime());
-#endif
+
 #if defined LEDSTRINGS
       //lightRetract(ledPins, soundFont.getPowerOffTime(),
         //           soundFont.getPowerOffEffect());
@@ -1120,9 +1056,7 @@ void loop() {
       modification = 0;
       //dfplayer.setVolume(storage.volume);
       menu = 0;
-#if defined STAR_LED
-      getColor(storage.sndProfile[storage.soundFont].mainColor);
-#endif
+
 #if defined PIXELBLADE
       getColor(storage.sndProfile[storage.soundFont].mainColor);
 #endif
@@ -1133,11 +1067,7 @@ void loop() {
     }
 
     // switch of light in Stand-by mode
-#if defined STAR_LED
-    lightOff(ledPins);
-#else
     lightOff();
-#endif
 
 #ifdef ACCENT_LED
     accentLEDControl(AL_ON);
@@ -1169,10 +1099,6 @@ void loop() {
     if (jukebox_play) {
 #ifdef LEDSTRINGS
       JukeBox_Stroboscope(ledPins);
-#endif
-
-#ifdef STAR_LED
-      JukeBox_Stroboscope();
 #endif
 
 #ifdef PIXELBLADE
@@ -1415,7 +1341,7 @@ void InitDFPlayer() {
     while(true);
   }
   Serial.println(F("DFPlayer Mini online."));
-  
+
   myDFPlayer.volume(25);  //Set volume value. From 0 to 30
   /*mp3_set_serial (mp3player);  //set softwareSerial for DFPlayer-mini mp3 module
   mp3player.begin(9600);

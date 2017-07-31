@@ -48,9 +48,6 @@ void confMenuStart(uint16_t variable, uint16_t sound, uint8_t menu) {
 void confMenuStart(CRGB variable, uint16_t sound, uint8_t menu) {
 #endif
   extern uint8_t ledPins[];
-#if defined STAR_LED
-	extern uint8_t currentColor[];
-#endif
 #if defined PIXELBLADE
 	extern CRGB currentColor;
 #endif
@@ -78,32 +75,6 @@ void confMenuStart(CRGB variable, uint16_t sound, uint8_t menu) {
 			lightOn(ledPins, 0);
 #endif
 			break;
-#if defined STAR_LED
-    case 2:
-			lightOff(ledPins);
-#if defined LS_INFO
-			Serial.print(F("COLOR1\nCur:"));
-#endif
-			getColor(currentColor, variable);
-			lightOn(ledPins, currentColor);
-			break;
-		case 3:
-			lightOff(ledPins);
-#if defined LS_INFO
-			Serial.print(F("COLOR2\nCur:"));
-#endif
-			getColor(currentColor, variable);
-			lightOn(ledPins, currentColor);
-			break;
-    case 4:
-      lightOff(ledPins);
-#if defined LS_INFO
-      Serial.print(F("COLOR3\nCur:"));
-#endif
-      getColor(currentColor, variable);
-      lightOn(ledPins, currentColor);
-      break;
-#endif
 
 #if defined PIXELBLADE
     case 2:
