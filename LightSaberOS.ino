@@ -45,11 +45,6 @@ DFPlayer dfplayer;
 #include <Wire.h>
 #endif
 
-#ifdef DEEP_SLEEP
-  #include <avr/sleep.h>
-  #include <avr/power.h>
-#endif // DEEP_SLEEP
-
 SoundFont soundFont;
 unsigned long sndSuppress = millis();
 unsigned long sndSuppress2 = millis();
@@ -465,17 +460,6 @@ void setup() {
   pinMode(SPK2, INPUT);
   SinglePlay_Sound(11);
   delay(1500);
-
-#ifdef DEEP_SLEEP
-  /************ DEEP_SLEEP MODE SETTINGS **********/
-  pinMode(MP3_PSWITCH, OUTPUT);
-  pinMode(FTDI_PSWITCH, OUTPUT);
-  digitalWrite(MP3_PSWITCH, LOW); // enable MP3 player with A0
-  digitalWrite(FTDI_PSWITCH, LOW); // enable FTDI player with A1
-  // pin change interrupt masks (see below list)
-  PCMSK2 |= bit (PCINT20);   // pin 4 Aux button
-  PCMSK0 |= bit (PCINT4);    // pin 12 Main button
-#endif // DEEP_SLEEP
 
 
   /****** INIT SABER STATE VARIABLE *****/
@@ -1064,28 +1048,7 @@ void loop() {
     }
   }
 #endif  //  JUKEBOX
-#ifdef DEEP_SLEEP
-  else if (SaberState == S_SLEEP) {
-    if (PrevSaberState == S_CONFIG) { // just entered Sleep mode
 
-      byte old_ADCSRA = ADCSRA;
-      // disable ADC to save power
-      // disable ADC
-      ADCSRA = 0;  // reduces another ~100uA!
-      SleepModeEntry();
-
-      // .. and the code will continue from here
-
-      ADCSRA = old_ADCSRA;   // re-enable ADC conversion
-      SleepModeExit();
-      SaberState = S_STANDBY;
-      PrevSaberState = S_SLEEP;
-      // play boot sound
-      SinglePlay_Sound(11);
-      delay(20);
-    }
-  }
-#endif // DEEP_SLEEP
 } //loop
 
 // ====================================================================================
@@ -1331,76 +1294,6 @@ void Resume_Sound() {
   dfplayer.play();
 #endif
 }
-
-#ifdef DEEP_SLEEP
-// ====================================================================================
-// ===                          SLEEP MODE FUNCTIONS                                ===
-// ====================================================================================
-
-void sleepNow()         // here we put the arduino to sleep
-{
-
-    power_all_disable ();   // turn off all modules -> no measurable effect
-
-    set_sleep_mode(SLEEP_MODE_PWR_DOWN);   // sleep mode is set here
-
-    sleep_enable();          // enables the sleep bit in the mcucr register
-                             // so sleep is possible. just a safety pin
-
-    // turn off brown-out enable in software -> no measurable effect
-    MCUCR = bit (BODS) | bit (BODSE);
-    MCUCR = bit (BODS);
-
-    PCIFR  |= bit (PCIF0) | bit (PCIF1) | bit (PCIF2);   // clear any outstanding interrupts
-    PCICR  |= bit (PCIE0) | bit (PCIE1) | bit (PCIE2);   // enable pin change interrupts
-
-    sleep_mode();            // here the device is actually put to sleep!!
-                             // THE PROGRAM CONTINUES FROM HERE AFTER WAKING UP
-
-    sleep_disable();         // first thing after waking from sleep:
-                             // disable sleep...
-    detachInterrupt(0);      // disables interrupt 0 on pin 2 so the
-                             // wakeUpNow code will not be executed
-                             // during normal running time.
-
-}
-
-void SleepModeEntry() {
-  // switch off all LS channels
-  for (uint8_t i = 0; i < sizeof(ledPins); i++) {
-    digitalWrite(ledPins[i], LOW);
-  }
-  mpu.setSleepEnabled(true);
-  digitalWrite(A1, HIGH); // A1 to High
-  pinMode(DFPLAYER_RX, OUTPUT);
-  digitalWrite(DFPLAYER_RX, LOW);
-  pinMode(DFPLAYER_TX, OUTPUT);
-  digitalWrite(DFPLAYER_TX, LOW);
-  delay (300);
-  digitalWrite(A2, HIGH); // A2 to High
-  delay(100);     // this delay is needed, the sleep
-  //function will provoke a Serial error otherwise!!
-  sleepNow();     // sleep function called here
-}
-
-void SleepModeExit() {
-
-  // cancel sleep as a precaution
-  sleep_disable();
-  power_all_enable ();   // enable modules again
-  digitalWrite(A2, LOW); // A2 to Low
-  delay (300);
-  mpu.setSleepEnabled(false);
-  delay (300);
-  digitalWrite(A1, LOW); // A1 to Low
-  pinMode(DFPLAYER_RX, OUTPUT);
-  pinMode(DFPLAYER_TX, INPUT);
-  delay (300);
-  setup(); // redo all initializations
-}
-
-
-#endif // DEEP_SLEEP
 
 // ====================================================================================
 // ===                         BATTERY CHECKING FUNCTIONS                           ===

@@ -173,22 +173,6 @@ static const uint8_t rgbFactor = 255;
  *
  */
 
-//#define DIYINO_PRIME
-//#define DIYINO_STARTDUST
-//#define ARDUINO_HOMEBREW
-
-/* DEEP_SLEEP
- * If you want to enable/disable
- * deep sleep capabalities
- * If you a device with a CPU wich is not
- * an Atmega328 : COMMENT THIS
- *************************************/
-#define DEEP_SLEEP
-#if defined DEEP_SLEEP
-#define SLEEP_TIMER			20000 //20 secs
-
-#endif  // DEEP_SLEEP
-
 /*
  * PINS DEFINITION
  */

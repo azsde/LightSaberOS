@@ -118,19 +118,6 @@ void mainClick() {
     }
 	}
 	else if (SaberState==S_CONFIG) {
-    #ifdef DEEP_SLEEP
-    if (ConfigModeSubStates==CS_SLEEPINIT) {
-        SaberState=S_SLEEP;
-        PrevSaberState=S_CONFIG;
-        // play a beep 3 times
-          SinglePlay_Sound(1);
-          delay(500);
-          SinglePlay_Sound(1);
-          delay(500);
-          SinglePlay_Sound(1);
-          delay(500);
-    }
-    #endif // DEEP_SLEEP
     SinglePlay_Sound(1);
     delay(50);
     if (ConfigModeSubStates == CS_VOLUME) {
@@ -329,31 +316,8 @@ void mainDoubleClick() {
             #endif
           #endif  // PIXELBLADE
         break;
-    #ifdef DEEP_SLEEP
-      case CS_SLEEPINIT:
-          ConfigModeSubStates=CS_SOUNDFONT;
-          SinglePlay_Sound(5);
-          delay(600);
-          SinglePlay_Sound(soundFont.getMenu());
-          #if defined PIXELBLADE
-            getColor(storage.sndProfile[storage.soundFont].mainColor);
-            for (uint8_t i = 0; i < 6; i++) {
-              digitalWrite(ledPins[i], HIGH);
-            }
-              lightOn(currentColor);
-          #endif  // PIXELBLADE
-          delay(500);
-          break;
-    #endif // DEEP_SLEEP
+
       case CS_VOLUME:
-        #ifdef DEEP_SLEEP
-          ConfigModeSubStates=CS_SLEEPINIT;
-          // repeat a beep 2 times
-          SinglePlay_Sound(1);
-          delay(500);
-          SinglePlay_Sound(1);
-          delay(500);
-        #else // no sleep mode capability
           lightOff();
           ConfigModeSubStates=CS_SOUNDFONT;
           SinglePlay_Sound(5);
@@ -367,7 +331,6 @@ void mainDoubleClick() {
                 lightOn(currentColor);
             #endif  // PIXELBLADE
           delay(500);
-        #endif // DEEP_SLEEP
         break;
       case CS_MAINCOLOR:
         ConfigModeSubStates=CS_CLASHCOLOR;
@@ -538,14 +501,6 @@ void mainLongPressStart() {
           #endif  // PIXELBLADE
         break;
       case CS_VOLUME:
-        #ifdef DEEP_SLEEP
-          ConfigModeSubStates=CS_SLEEPINIT;
-          // repeat a beep 2 times
-          SinglePlay_Sound(1);
-          delay(500);
-          SinglePlay_Sound(1);
-          delay(500);
-        #else // no sleep mode capability
           ConfigModeSubStates=CS_SOUNDFONT;
           SinglePlay_Sound(5);
           delay(600);
@@ -559,7 +514,6 @@ void mainLongPressStart() {
               lightOn(currentColor);
           #endif  // PIXELBLADE
           delay(500);
-        #endif  // DEEP_SLEEP
         break;
       case CS_MAINCOLOR:
         ConfigModeSubStates=CS_CLASHCOLOR;
@@ -608,22 +562,7 @@ void mainLongPressStart() {
         SinglePlay_Sound(4);
         delay(500);
         break;
-      #ifdef DEEP_SLEEP
-      case CS_SLEEPINIT:
-          ConfigModeSubStates=CS_SOUNDFONT;
-          SinglePlay_Sound(5);
-          delay(600);
-          SinglePlay_Sound(soundFont.getMenu());
-          #if defined PIXELBLADE
-            getColor(storage.sndProfile[storage.soundFont].mainColor);
-            for (uint8_t i = 0; i < 6; i++) {
-              digitalWrite(ledPins[i], HIGH);
-            }
-              lightOn(currentColor);
-          #endif  // PIXELBLADE
-          delay(500);
-          break;
-      #endif // DEEP_SLEEP
+
       }
 #else  // SINGLEBUTTON
 //Leaving Config Mode
