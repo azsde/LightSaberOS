@@ -61,18 +61,10 @@ void confMenuStart(CRGB variable, uint16_t sound, uint8_t menu) {
 #if defined LS_INFO
       Serial.print(F("SNDFT\nCur:"));
 #endif
-#if defined LEDSTRINGS
-      lightOff();
-      lightOn(ledPins, 1);
-#endif
       break;
     case 1:
 #if defined LS_INFO
 			Serial.print(F("VOL\nCur:"));
-#endif
-#if defined LEDSTRINGS
-			lightOff();
-			lightOn(ledPins, 0);
 #endif
 			break;
 

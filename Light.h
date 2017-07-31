@@ -34,23 +34,6 @@ struct softPWM {
 
 void BladeMeter (int meterLevel);
 
-#if defined LEDSTRINGS
-
-void lightOn(uint8_t ledPins[], int8_t segment = -1);
-void lightOff();
-
-void lightIgnition(uint8_t ledPins[], uint16_t time, uint8_t type);
-void lightRetract(uint8_t ledPins[], uint16_t time, uint8_t type);
-
-void FoCOn (uint8_t pin);
-void FoCOff (uint8_t pin);
-
-void lightFlicker(uint8_t ledPins[], uint8_t type, uint8_t value = 0,uint8_t AState=0);
-  #ifdef JUKEBOX
-    void JukeBox_Stroboscope(uint8_t ledPins[]);
-  #endif
-#endif
-
 #if defined PIXELBLADE
 
 //void pixelblade_KillKey_Enable();

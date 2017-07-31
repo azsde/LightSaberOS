@@ -51,12 +51,7 @@
 /*
  * BLADE TYPE
  *
- * RGB LED OR PIXELBLADE users:
- * Comment the following line will
- * disable and remove all LEDSTRINGS
- * blocks from compile
  *************************************/
-//#define LEDSTRINGS
 #define PIXELBLADE
 
 /************************************/
@@ -85,9 +80,6 @@
  * DO NOT MODIFY
  * Unless you know what you're doing
  *************************************/
-#if defined LEDSTRINGS
-#define CONFIG_VERSION     "L01"
-#endif
 #if defined PIXELBLADE
 #define CONFIG_VERSION     "L03"
 #endif
@@ -201,23 +193,6 @@ static const uint8_t rgbFactor = 255;
  * PINS DEFINITION
  */
 
-#if defined LEDSTRINGS
-
-#define LS1 			3 //3
-#define LS2 			5 //5
-#define LS3 			6  //6
-#define LS4 			9  //9
-#define LS5 			10  //10
-#define LS6 			11 //11
-
-/*
- * FoCSTRING
- * Enable/disable management of
- * single Flash On Clash ledstring
- *************************************/
-//#define FoCSTRING			14
-#endif
-
 #ifdef PIXELBLADE
 
   #ifdef DIYINO_PRIME
@@ -255,8 +230,6 @@ static const uint8_t rgbFactor = 255;
  * RGB LEDS user should choose tu plu their
  * Accent leds on Hardware PWM pin
  *
- * LEDSTRINGS users have no choice :
- * your forced to use Software Accent LED
  *************************************/
 //#define ACCENT_LED  14 //A0
 #if defined ACCENT_LED
@@ -323,11 +296,6 @@ static const uint8_t rgbFactor = 255;
 #define CONFIG_FLICKER_EFFECT
 #endif
 
-#if defined LEDSTRINGS
-#define CONFIG_POWERON_EFFECT
-#define CONFIG_POWEROFF_EFFECT
-#define CONFIG_FLICKER_EFFECT
-#endif
 /*
  * DEBUG PARAMETERS
  */

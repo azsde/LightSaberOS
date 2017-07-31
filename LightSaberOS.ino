@@ -99,14 +99,6 @@ VectorInt16 prevDeltAccel;
 /***************************************************************************************************
  * LED String variables
  */
-#if defined LEDSTRINGS
-#ifdef DIYINO_PRIME
-  uint8_t ledPins[] = {LS1, LS2, LS3, LS4, LS5, LS6};
-#else if #ifdef DIYINO_STARDUST
-  uint8_t ledPins[] = {LS1, LS2, LS3};
-#endif
-uint8_t blasterPin;
-#endif
 
 #if defined PIXELBLADE
 #ifdef DIYINO_PRIME
@@ -152,15 +144,6 @@ bool changeMenu = false;
 bool play = false;
 unsigned int configAdress = 0;
 volatile uint8_t portbhistory = 0xFF;     // default is high because the pull-up
-#if defined LEDSTRINGS
-struct StoreStruct {
-	// This is for mere detection if they are our settings
-	char version[5];
-	// The settings
-	uint8_t volume;     // 0 to 31
-	uint8_t soundFont; // as many Sound font you have defined in Soundfont.h Max:253
-} storage;
-#endif
 
 #if defined PIXELBLADE
 struct StoreStruct {
@@ -218,8 +201,6 @@ void setup() {
 			storage.version[i] = CONFIG_VERSION[i];
 		storage.soundFont = SOUNDFONT;
 		storage.volume = VOL;
-#if defined LEDSTRINGS
-#endif
 
 #if defined PIXELBLADE
     for (uint8_t i=2; i<SOUNDFONT_QUANTITY+2;i++){
@@ -562,11 +543,6 @@ void loop() {
       //Play powerons wavs
       SinglePlay_Sound(soundFont.getPowerOn());
       // Light up the ledstrings
-#if defined LEDSTRINGS
-      lightIgnition(ledPins, soundFont.getPowerOnTime(),
-                    soundFont.getPowerOnEffect());
-#endif
-
 #if defined PIXELBLADE
       /*for (uint8_t i = 0; i <= 5; i++) {
         digitalWrite(ledPins[i], HIGH);
@@ -636,11 +612,6 @@ void loop() {
           */
           ActionModeSubStates = AS_CLASH;
 
-#if defined LEDSTRINGS
-          for (uint8_t i = 0; i <= 5; i++) {
-            analogWrite(ledPins[i], 255);
-          }
-#endif
 #if defined PIXELBLADE
 #ifdef FIREBLADE  // simply flash white
           getColor(14);
@@ -667,11 +638,6 @@ void loop() {
 
       if (soundFont.getBlaster()) {
         SinglePlay_Sound(soundFont.getBlaster());
-#if defined LEDSTRINGS
-        blasterPin = random(1,5); //momentary shut off one led segment
-        blink = 0;
-        analogWrite(ledPins[blasterPin], LOW);
-#endif
 
 #if defined PIXELBLADE
 #ifdef FIREBLADE
@@ -909,9 +875,6 @@ void loop() {
       if (millis() - sndSuppress > HUM_RELAUNCH and not hum_playing and ActionModeSubStates != AS_BLADELOCKUP) {
         HumRelaunch();
       }
-#ifdef LEDSTRINGS
-      lightFlicker(ledPins, soundFont.getFlickerEffect(), 0, ActionModeSubStates);
-#endif
 
 #ifdef PIXELBLADE
       getColor(storage.sndProfile[storage.soundFont].mainColor);
@@ -1026,10 +989,6 @@ void loop() {
       lockupButton.setPressTicks(PRESS_CONFIG);
 #endif
 
-#if defined LEDSTRINGS
-      //lightRetract(ledPins, soundFont.getPowerOffTime(),
-        //           soundFont.getPowerOffEffect());
-#endif
 #if defined PIXELBLADE
       //lightRetract(soundFont.getPowerOffTime(), soundFont.getPowerOffEffect());
       //pixelblade_KillKey_Enable();
@@ -1097,9 +1056,6 @@ void loop() {
       SinglePlay_Sound(jb_track);  // JukeBox dir/files must be directly adjecent to config sounds on the SD card
     }
     if (jukebox_play) {
-#ifdef LEDSTRINGS
-      JukeBox_Stroboscope(ledPins);
-#endif
 
 #ifdef PIXELBLADE
       getColor(storage.sndProfile[storage.soundFont].mainColor);

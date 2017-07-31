@@ -35,9 +35,6 @@ extern int8_t blink;
 extern bool changeMenu;
 extern uint8_t menu;
 extern bool enterMenu;
-#if defined LEDSTRINGS
-extern uint8_t ledPins[];
-#endif
 
 #if defined PIXELBLADE
 extern uint8_t ledPins[];
@@ -56,15 +53,6 @@ extern void confParseValue(uint16_t variable, uint16_t min, uint16_t max,
     short int multiplier);
 #ifndef COLORS
 extern uint8_t GravityVector();
-#endif
-#if defined LEDSTRINGS
-extern struct StoreStruct {
-  // This is for mere detection if they are our settings
-  char version[5];
-  // The settings
-  uint8_t volume;     // 0 to 31
-  uint8_t soundFont; // as many Sound font you have defined in Soundfont.h Max:253
-} storage;
 #endif
 
 #if defined PIXELBLADE
@@ -323,15 +311,6 @@ void mainDoubleClick() {
         delay(500);
         break;
       case CS_SOUNDFONT:
-        #ifdef LEDSTRINGS
-          #if defined LS_FSM
-            Serial.print(F("Volume"));
-          #endif
-          ConfigModeSubStates=CS_VOLUME;
-          BladeMeter(storage.volume*100/30);
-          SinglePlay_Sound(4);
-          delay(500);
-        #else
           ConfigModeSubStates=CS_MAINCOLOR;
           SinglePlay_Sound(6);
           delay(500);
@@ -349,7 +328,6 @@ void mainDoubleClick() {
               lightOn(currentColor, NUMPIXELS/2, NUMPIXELS-6);
             #endif
           #endif  // PIXELBLADE
-        #endif // is/isnot LEDSTRINGS
         break;
     #ifdef DEEP_SLEEP
       case CS_SLEEPINIT:
@@ -541,15 +519,6 @@ void mainLongPressStart() {
         delay(500);
         break;
       case CS_SOUNDFONT:
-        #ifdef LEDSTRINGS
-          #if defined LS_FSM
-            Serial.print(F("Volume"));
-          #endif
-          ConfigModeSubStates=CS_VOLUME;
-          BladeMeter(storage.volume*100/30);
-          SinglePlay_Sound(4);
-          delay(500);
-        #else  // not LEDSTRINGS
           ConfigModeSubStates=CS_MAINCOLOR;
           SinglePlay_Sound(6);
           delay(500);
@@ -567,7 +536,6 @@ void mainLongPressStart() {
               lightOn(currentColor, NUMPIXELS/2, NUMPIXELS-6);
             #endif
           #endif  // PIXELBLADE
-        #endif // is/isnot LEDSTRINGS
         break;
       case CS_VOLUME:
         #ifdef DEEP_SLEEP
