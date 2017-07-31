@@ -90,6 +90,7 @@ WS2812 pixels(NUMPIXELS);
 cRGB color;
 cRGB currentColor;
 uint8_t blasterPixel;
+bool ledStripInitDone = false;
 #endif
 
 uint8_t blaster = 0;
@@ -154,7 +155,6 @@ inline void printAcceleration(VectorInt16 aaWorld);
 // ===        	       	   			SETUP ROUTINE  	 	                			===
 // ====================================================================================
 void setup() {
-
 	// join I2C bus (I2Cdev library doesn't do this automatically)
 #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
 	Wire.begin();
@@ -401,13 +401,17 @@ void loop() {
 
    mainButton.tick();
 
+   // For some reason if I put this in the setup routine, it messes up everything...
+   if (ledStripInitDone == false) {
+    initLedStrip();
+    ledStripInitDone = true;
+   }
+
   // if MPU6050 DMP programming failed, don't try to do anything : EPIC FAIL !
   if (!dmpReady) {
     Serial.println(F("uh oh"));
     return;
   }
-
-   
 
   /*//////////////////////////////////////////////////////////////////////////////////////////////////////////
      ACTION MODE HANDLER
@@ -1183,3 +1187,8 @@ void retractBlade() {
       pixels.sync();
       delay(10);
   }*/
+
+void initLedStrip() {
+  pixels.setOutput(13);
+}
+
