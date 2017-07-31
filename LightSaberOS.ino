@@ -14,16 +14,11 @@
 /***************************************************************************************************
 * DFPLAYER variables
 */
-#define OLD_DPFPLAYER_LIB
-#ifdef OLD_DPFPLAYER_LIB
+
 #include "SoftwareSerial.h"
 #include "DFRobotDFPlayerMini.h"
 SoftwareSerial mySoftwareSerial(7, 8); // RX, TX
 DFRobotDFPlayerMini myDFPlayer;
-#else
-#include <DFPlayer.h>
-DFPlayer dfplayer;
-#endif
 
 #include <SoftwareSerial.h> // interestingly the DFPlayer lib refuses
 
@@ -1134,41 +1129,24 @@ void HumRelaunch() {
 }
 
 void SinglePlay_Sound(uint8_t track) {
-#ifdef OLD_DPFPLAYER_LIB
-  //mp3_play_physical(track);
   myDFPlayer.play(track);
-#else // DFPlayer_LSOS
-  dfplayer.playPhysicalTrack(track);
-#endif
 }
 
 void LoopPlay_Sound(uint8_t track) {
-#ifdef OLD_DPFPLAYER_LIB
   myDFPlayer.loop(track);
-#else // DFPlayer_LSOS
-  dfplayer.playSingleLoop(track);
-#endif
 }
 
 void Set_Volume() {
-#ifdef OLD_DPFPLAYER_LIB
   myDFPlayer.volume(storage.volume);
-#else
-  dfplayer.setVolume(storage.volume); // Too Slow: we'll change volume on exit
-#endif
   delay(50);
 }
 
 void Set_Loop_Playback() {
-#ifdef OLD_DPFPLAYER_LIB
-  //mp3_single_loop(true);
-#else
-  dfplayer.setSingleLoop(true);
-#endif
+//myDFPlayer.loop(); <-- line to adapt ?
+//mp3_single_loop(true); <-- old line
 }
 
 void InitDFPlayer() {
-#ifdef OLD_DPFPLAYER_LIB
   mySoftwareSerial.begin(9600);
   if (!myDFPlayer.begin(mySoftwareSerial)) {  //Use softwareSerial to communicate with mp3.
     Serial.println(F("Unable to begin:"));
@@ -1177,39 +1155,15 @@ void InitDFPlayer() {
     while(true);
   }
   Serial.println(F("DFPlayer Mini online."));
-
   myDFPlayer.volume(25);  //Set volume value. From 0 to 30
-  /*mp3_set_serial (mp3player);  //set softwareSerial for DFPlayer-mini mp3 module
-  mp3player.begin(9600);
-  delay(200);
-  mp3_set_device(1); //playback from SD card
-  delay(200);
-  mp3_set_volume (storage.volume);*/
-#else
-  dfplayer.setSerial(DFPLAYER_TX, DFPLAYER_RX);
-  // AK 7.9.2016: if the storage.volume has no or invalid value, it will cause the
-  // sketch to repeat setup (reset itself) - up till now no idea why?
-  // this can happen if the EEPROM is erased (i.e. reflash of bootloader)
-  dfplayer.setVolume(storage.volume);
-
-  //setup finished. Boot ready. We notify !
-#endif
 }
 
 void Pause_Sound() {
-#ifdef OLD_DPFPLAYER_LIB
   myDFPlayer.pause();
-#else
-  dfplayer.pause();
-#endif
 }
 
 void Resume_Sound() {
-#ifdef OLD_DPFPLAYER_LIB
    myDFPlayer.start();
-#else
-  dfplayer.play();
-#endif
 }
 
 // ====================================================================================
