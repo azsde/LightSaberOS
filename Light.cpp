@@ -98,76 +98,6 @@ void lightOff() {
 	FastLED.show();
 } //lightOff
 
-#ifndef COLORS
-void ColorMixing(CRGB colorID, int8_t mod, uint8_t maxBrightness, bool Saturate) {
-  CRGB mixedColor;
-  mixedColor.r=colorID.r;
-  mixedColor.g=colorID.g;
-  mixedColor.b=colorID.b;
-      switch(mod) {
-        case(0):
-          if (Saturate) {
-            mixedColor.r=maxBrightness;
-          }
-          else {
-            mixedColor.r=constrain(colorID.r+1,0,255);
-          }
-          break;
-        case(1):
-          if (Saturate) {
-            mixedColor.r=0;
-          }
-          else {
-            mixedColor.r=constrain(colorID.r-1,0,255);
-          }
-          break;
-        case(2):
-          if (Saturate) {
-            mixedColor.g=maxBrightness;
-          }
-          else {
-            mixedColor.g=constrain(colorID.g+1,0,255);
-          }
-          break;
-        case(3):
-          if (Saturate) {
-            mixedColor.g=0;
-          }
-          else {
-            mixedColor.g=constrain(colorID.g-1,0,255);
-          }
-          break;
-        case(4):
-          if (Saturate) {
-            mixedColor.b=maxBrightness;
-          }
-          else {
-            mixedColor.b=constrain(colorID.b+1,0,255);
-          }
-          break;
-        case(5):
-          if (Saturate) {
-            mixedColor.b=0;
-          }
-          else {
-            mixedColor.b=constrain(colorID.b-1,0,255);
-          }
-          break;
-      }
-        getColor(mixedColor);
-        //lightOn(mixedColor, 0, NUMPIXELS-6);
-        #if defined LS_DEBUG
-          //Serial.print(storage.sndProfile[storage.soundFont].mainColor);
-          Serial.print("\tR:");
-          Serial.print(currentColor.r);
-          Serial.print("\tG:");
-          Serial.print(currentColor.g);
-          Serial.print(" \tB:");
-          Serial.println(currentColor.b);
-        #endif
-  }
-#endif
-
 void lightIgnition(CRGB color, uint16_t time, uint8_t type) {
 	CRGB value = color;
 	//switch (type) {
@@ -208,7 +138,7 @@ void lightRetract(uint16_t time, uint8_t type) {
 		value.b = 0;
 		value.g = 0;
 		value.r = 0; // RGB Value -> Off
-    RampPixels(time, false);
+    //RampPixels(time, false);
 		for (uint16_t i = NUMPIXELS; i > 0; i--) {
 			//BUG CORRECTION:
 			//Not uint8_t here because Arduino nano clones did go
@@ -236,27 +166,9 @@ void lightRetract(uint16_t time, uint8_t type) {
 		 break;
 		 */
 	//}
-#ifdef FIREBLADE
-#ifdef CROSSGUARDSABER
-  for(unsigned int j=0; j<STRIPE1; j++ ) { // clear the heat static variables
-    heat_cg[j]=0;
-  }
-  for(unsigned int j=0; j<STRIPE2; j++ ) { // clear the heat static variables
-    heat[j]=0;
-  }
-#else
-  for(unsigned int j=0; j<NUMPIXELS; j++ ) { // clear the heat static variables
-    heat[j]=0;
-  }
-#endif
-#endif
 }				//lightRetract
 
-#ifdef COLORS
 void lightBlasterEffect(uint8_t pixel, uint8_t range, uint8_t SndFnt_MainColor) {
-#else
-void lightBlasterEffect(uint8_t pixel, uint8_t range, CRGB SndFnt_MainColor) {
-#endif
   CRGB blastcolor;
   CRGB fadecolor;
   blastcolor.r=currentColor.r;
@@ -418,13 +330,7 @@ brightness = flickFactor;
  * Colors are defined in percentage of brightness.
  *
  */
-#ifdef COLORS
 void getColor(uint8_t color) {
-#else
-void getColor(CRGB color) {
-#endif
-
-#ifdef COLORS
   switch (color) {
   case 0:
 //Red
@@ -462,71 +368,10 @@ void getColor(CRGB color) {
     currentColor.g = 0;
     currentColor.b = 100;
     break;
-
-  case 6:
-//DarkGrey
-    currentColor.r = 100;
-    currentColor.g = 100;
-    currentColor.b = 100;
-    break;
-  case 7:
-//DarkOrange
-    currentColor.r = 1000;
-    currentColor.g = 76;
-    currentColor.b = 0;
-    break;
-  case 8:
-//DarkViolet
-    currentColor.r = 100;
-    currentColor.g = 0;
-    currentColor.b = 100;
-    break;
-  case 9:
-//DodgerBlue
-    currentColor.r = 24;
-    currentColor.g = 80;
-    currentColor.b = 100;
-    break;
-  case 10:
-//Gold
-    currentColor.r = 100;
-    currentColor.g = 120;
-    currentColor.b = 0;
-    break;
-  case 11:
-//GoldenRod
-    currentColor.r = 100;
-    currentColor.g = 112;
-    currentColor.b = 24;
-    break;
-  case 12:
-//Indigo
-    currentColor.r = 80;
-    currentColor.g = 0;
-    currentColor.b = 100;
-    break;
-  case 13:
-//LightGreen
-    currentColor.r = 90;
-    currentColor.g = 100;
-    currentColor.b = 90;
-    break;
-
-  default:
-// White (if enough voltage)
-    currentColor.r = 50;
-    currentColor.g = 50;
-    currentColor.b = 50;
-    break;
   }
-#else
-    currentColor.r = color.r;
-    currentColor.g = color.g;
-    currentColor.b = color.b;
-#endif
 } //getColor
 
-// neopixel ramp code from jbkuma
+/*// neopixel ramp code from jbkuma
 void RampPixels(uint16_t RampDuration, bool DirectionUpDown) {
   unsigned long ignitionStart = millis();  //record start of ramp function
   CRGB value;
@@ -571,7 +416,7 @@ void RampPixels(uint16_t RampDuration, bool DirectionUpDown) {
      delay(RampDuration/NUMPIXELS); //match the ramp duration to the number of pixels in the string
   }
 #endif
-}
+}*/
 
 #ifdef FIREBLADE
 void FireBlade() {

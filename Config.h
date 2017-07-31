@@ -11,13 +11,15 @@
 
 /***** Battery meter settings *****/
 //#define BATTERY_CHECK // comment to disable
+#ifdef BATTERY_CHECK
 #define BATTERY_FACTOR 5 // Callibration value to compensate for component variation
 #define BATTERY_READPIN 17 //A3 - read battery level 100kohm from GND, 470kohm from Bat+
 #define LOW_BATTERY 3.3 // low voltage for battery, a 5v Arduino or DIYino requires 3.3v
 #define FULL_BATTERY 4.15 // full voltage for battery, nominally 4.2 for a 3.7v battery
-//CRGB C1;  //Low meter color
-//CRGB C2;  //middle meter color
-//CRGB C3;  //high meter color
+CRGB C1;  //Low meter color
+CRGB C2;  //middle meter color
+CRGB C3;  //high meter color
+#endif
 
 
 /*!!!!!IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT!!!
@@ -103,7 +105,7 @@
 //#define FIREBLADE
 
 // Number of color defined
-#define COLORS 3
+#define COLORS 6
 static const uint8_t rgbFactor = 255;
 
 // For led chips like NEOPIXELs, which have a data line, ground, and power, you just
@@ -111,11 +113,6 @@ static const uint8_t rgbFactor = 255;
 // ground, and power), like the LPD8806 define both DATA_PIN and CLOCK_PIN
 #define LED_STRIP_DATA_PIN 13
 #endif
-
-/************************************/ // BLADE TYPE
-
-
-
 
 
 /* MAX_BRIGHTNESS
@@ -259,9 +256,6 @@ static const uint8_t rgbFactor = 255;
 //#define LS_CLASH_DEBUG
 //#define LS_CLASH_HEAVY_DEBUG
 //#endif
-
-
-
 
 #endif /* CONFIG_H_ */
 

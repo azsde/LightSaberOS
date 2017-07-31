@@ -101,8 +101,7 @@ uint8_t randomBlink = 0;
 /***************************************************************************************************
  * Buttons variables
  */
-//OneButton mainButton(MAIN_BUTTON, true);
-OneButton button(SINGLEBUTTON,true);
+OneButton mainButton(SINGLEBUTTON, true);
 
 // replaced by Saber State Machine Variables
 //bool actionMode = false; // Play with your saber
@@ -358,7 +357,6 @@ void setup() {
 #if defined PIXELBLADE
   FastLED.addLeds<WS2812B, LED_STRIP_DATA_PIN, GRB>(pixels, NUMPIXELS).setCorrection(TypicalLEDStrip);
   FastLED.setBrightness(MAX_BRIGHTNESS); // This initializes the NeoPixel library.
-//  pixelblade_KillKey_Disable();
   currentColor.r = 0;
   currentColor.g = 0;
   currentColor.b = 0;
@@ -366,12 +364,6 @@ void setup() {
   delay(300);
   lightOff();
   getColor(storage.sndProfile[storage.soundFont].mainColor);
-//  pixelblade_KillKey_Enable();
-#endif
-
-#if defined FoCSTRING
-  pinMode(FoCSTRING, OUTPUT);
-  FoCOff(FoCSTRING);
 #endif
 
 #if defined ACCENT_LED
@@ -388,18 +380,13 @@ void setup() {
   /***** BUTTONS INITIALISATION  *****/
 
   // link the Main button functions.
-/*  mainButton.setClickTicks(CLICK);
-  mainButton.setPressTicks(PRESS_CONFIG);
+ // mainButton.setClickTicks(CLICK);
+  //mainButton.setPressTicks(PRESS_CONFIG);
   mainButton.attachClick(mainClick);
   mainButton.attachDoubleClick(mainDoubleClick);
   mainButton.attachLongPressStart(mainLongPressStart);
   mainButton.attachLongPressStop(mainLongPressStop);
-  mainButton.attachDuringLongPress(mainLongPress);*/
-
-  // link the doubleclick function to be called on a doubleclick event.
-  //
-  //button.attachDoubleClick(mainDoubleClick);
-  //button.attachDuringLongPress(mainLongPressStart);
+  mainButton.attachDuringLongPress(mainLongPress);
 
   /***** DF PLAYER INITIALISATION  *****/
   InitDFPlayer();
@@ -417,7 +404,6 @@ void setup() {
   ActionModeSubStates = AS_HUM;
 
   digitalWrite(MULTICOLOR_ACCENT_LED,HIGH);
-  button.attachClick(mainClick);
 }
 
 // ====================================================================================
@@ -431,9 +417,8 @@ void loop() {
   if (!dmpReady) {
     return;
   }
-
- button.tick();
-//  mainButton.tick();
+  
+   mainButton.tick();
 
   /*//////////////////////////////////////////////////////////////////////////////////////////////////////////
      ACTION MODE HANDLER
@@ -475,8 +460,8 @@ void loop() {
       /*for (uint8_t i = 0; i <= 5; i++) {
         digitalWrite(ledPins[i], HIGH);
       }*/
-      //lightIgnition(currentColor, soundFont.getPowerOnTime(), 0);
-      deployBlade(currentColor);
+      lightIgnition(currentColor, soundFont.getPowerOnTime(), 0);
+      //deployBlade(currentColor);
 
 #endif
       sndSuppress = millis();
@@ -915,9 +900,9 @@ void loop() {
 #endif
 
 #if defined PIXELBLADE
-      //lightRetract(soundFont.getPowerOffTime(), soundFont.getPowerOffEffect());
+      lightRetract(soundFont.getPowerOffTime(), soundFont.getPowerOffEffect());
       //pixelblade_KillKey_Enable();
-      retractBlade();
+      //retractBlade();
 #endif
 
     }
@@ -1149,9 +1134,7 @@ void Set_Loop_Playback() {
 void InitDFPlayer() {
   mySoftwareSerial.begin(9600);
   if (!myDFPlayer.begin(mySoftwareSerial)) {  //Use softwareSerial to communicate with mp3.
-    Serial.println(F("Unable to begin:"));
-    Serial.println(F("1.Please recheck the connection!"));
-    Serial.println(F("2.Please insert the SD card!"));
+    Serial.println(F("Unable to communicate with DFPlayer:"));
     while(true);
   }
   Serial.println(F("DFPlayer Mini online."));
@@ -1170,7 +1153,7 @@ void Resume_Sound() {
 // ===                         BATTERY CHECKING FUNCTIONS                           ===
 // ====================================================================================
 
-
+#ifdef BATTERY_CHECK
 float batCheck() {
   float sum = 0;
   // take a number of analog samples and add them up
@@ -1195,7 +1178,8 @@ float batCheck() {
   return voltage;
   // return 3.2; //temporary value for testing
 }
-
+#endif
+/*
 void deployBlade(CRGB color) {
   for (uint16_t i = 0 ; i < NUMPIXELS ; i ++ ) {
       pixels[i] = color;
@@ -1209,5 +1193,4 @@ void retractBlade() {
       pixels[i] = CRGB::Black;
       FastLED.show();
       delay(10);
-  }
-}
+  }*/

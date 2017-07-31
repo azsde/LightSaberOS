@@ -34,7 +34,6 @@ extern uint8_t menu;
 extern bool enterMenu;
 
 #if defined PIXELBLADE
-extern uint8_t ledPins[];
 extern CRGB color;
 extern CRGB currentColor;
 #endif
@@ -250,9 +249,6 @@ void mainDoubleClick() {
         SinglePlay_Sound(soundFont.getMenu());
           #if defined PIXELBLADE
             getColor(storage.sndProfile[storage.soundFont].mainColor);
-            for (uint8_t i = 0; i < 6; i++) {
-              digitalWrite(ledPins[i], HIGH);
-            }
               lightOn(currentColor);
           #endif  // PIXELBLADE
         delay(500);
@@ -266,9 +262,6 @@ void mainDoubleClick() {
           #endif
           #if defined PIXELBLADE
             getColor(storage.sndProfile[storage.soundFont].mainColor);
-            for (uint8_t i = 0; i < 6; i++) {
-              digitalWrite(ledPins[i], HIGH);
-            }
             #ifdef COLORS
               lightOn(currentColor);
             #else  // not COLORS
@@ -285,9 +278,6 @@ void mainDoubleClick() {
           SinglePlay_Sound(soundFont.getMenu());
             #if defined PIXELBLADE
               getColor(storage.sndProfile[storage.soundFont].mainColor);
-              for (uint8_t i = 0; i < 6; i++) {
-                digitalWrite(ledPins[i], HIGH);
-              }
                 lightOn(currentColor);
             #endif  // PIXELBLADE
           delay(500);
@@ -301,9 +291,6 @@ void mainDoubleClick() {
         #endif
         #if defined PIXELBLADE
           getColor(storage.sndProfile[storage.soundFont].clashColor);
-          for (uint8_t i = 0; i < 6; i++) {
-            digitalWrite(ledPins[i], HIGH);
-          }
             #ifdef COLORS
               lightOn(currentColor);
             #else  // not COLORS
@@ -320,9 +307,6 @@ void mainDoubleClick() {
         #endif
         #if defined PIXELBLADE
           getColor(storage.sndProfile[storage.soundFont].blasterboltColor);
-          for (uint8_t i = 0; i < 6; i++) {
-            digitalWrite(ledPins[i], HIGH);
-          }
             #ifdef COLORS
               lightOn(currentColor);
             #else  // not COLORS
