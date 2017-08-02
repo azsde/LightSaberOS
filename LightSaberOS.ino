@@ -90,7 +90,7 @@ WS2812 pixels(NUMPIXELS);
 cRGB color;
 cRGB currentColor;
 uint8_t blasterPixel;
-bool ledStripInitDone = false;
+bool extraInitDone = false;
 #endif
 
 uint8_t blaster = 0;
@@ -357,7 +357,7 @@ void setup() {
 #if defined ACCENT_LED
   pinMode(ACCENT_LED, OUTPUT);
 #else if MULTICOLOR_ACCENT_LED
-  pinMode(MULTICOLOR_ACCENT_LED, OUTPUT);
+  pinMode(ACCENT_LED_COMMON_ANODE, OUTPUT);
 #endif
 
   //Randomize randomness (no really that's what it does)
@@ -391,7 +391,7 @@ void setup() {
   PrevSaberState = S_SLEEP;
   ActionModeSubStates = AS_HUM;
 
-  digitalWrite(MULTICOLOR_ACCENT_LED,HIGH);
+  digitalWrite(ACCENT_LED_COMMON_ANODE,HIGH);
 }
 
 // ====================================================================================
@@ -402,9 +402,10 @@ void loop() {
    mainButton.tick();
 
    // For some reason if I put this in the setup routine, it messes up everything...
-   if (ledStripInitDone == false) {
+   if (extraInitDone == false) {
     initLedStrip();
-    ledStripInitDone = true;
+    initCrystalLED();
+    extraInitDone = true;
    }
 
   // if MPU6050 DMP programming failed, don't try to do anything : EPIC FAIL !
@@ -1192,3 +1193,12 @@ void initLedStrip() {
   pixels.setOutput(13);
 }
 
+void initCrystalLED() {
+  #ifdef CRYSTAL_COMMON_ANODE
+      pinMode(CRYSTAL_COMMON_ANODE, OUTPUT);
+  #else
+      pinMode(RED_CRYSTAL_LED, OUTPUT);
+      pinMode(GREEN_CRYSTAL_LED, OUTPUT);
+      pinMode(BLUE_CRYSTAL_LED, OUTPUT);
+  #endif
+}

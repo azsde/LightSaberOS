@@ -16,6 +16,7 @@
 
 
 enum AccentLedAction_En {AL_PULSE, AL_ON, AL_OFF};
+enum CrystalLedAction_En {CL_PULSE, CL_ON, CL_OFF};
 
 #if defined ACCENT_LED
 #if defined SOFT_ACCENT
@@ -73,6 +74,11 @@ void accentLEDControl(AccentLedAction_En AccentLedAction);
 #else
 void accentLEDControl(AccentLedAction_En AccentLedAction, cRGB color);
 #endif
+
+#ifndef MULTICOLOR_CRYSTAL_LED
+void crystalLEDControl(CrystalLedAction_En CrystalLedAction, cRGB color);
+#endif
+
 void PWM();
 #endif /* LIGHT_H_ */
 

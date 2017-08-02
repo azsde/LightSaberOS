@@ -1,9 +1,9 @@
 /*
- * Light.cpp
- *
- * author: 		Sebastien CAPOU (neskweek@gmail.com) and Andras Kun (kun.andras@yahoo.de)
- * Source : 	https://github.com/neskweek/LightSaberOS
- */
+   Light.cpp
+
+   author: 		Sebastien CAPOU (neskweek@gmail.com) and Andras Kun (kun.andras@yahoo.de)
+   Source : 	https://github.com/neskweek/LightSaberOS
+*/
 #include "Light.h"
 #include "Config.h"
 
@@ -15,11 +15,15 @@ extern SaberStateEnum PrevSaberState;
 extern ActionModeSubStatesEnum ActionModeSubStates;
 extern ConfigModeSubStatesEnum ConfigModeSubStates;
 
-# if defined ACCENT_LED or MULTICOLOR_ACCENT_LED
+#ifdef ACCENT_LED
 unsigned long lastAccent = millis();
 #if defined SOFT_ACCENT
 unsigned long lastAccentTick = micros();
 #endif
+#endif
+
+#ifdef MULTICOLOR_ACCENT_LED
+unsigned long lastAccent = millis();
 #endif
 
 #ifdef FIREBLADE
@@ -60,9 +64,9 @@ extern cRGB currentColor;
     digitalWrite(10, LOW);
     digitalWrite(11, LOW);
     digitalWrite(13,HIGH); // in order not to back-connect GND over the Data pin to the stripes when the Low-Sides disconnect it
-}
+  }
 
-void pixelblade_KillKey_Disable() {
+  void pixelblade_KillKey_Disable() {
   // cut power to the neopixels stripes by disconnecting their GND signal using the LS pins
     digitalWrite(3, HIGH);
     digitalWrite(5, HIGH);
@@ -70,123 +74,123 @@ void pixelblade_KillKey_Disable() {
     digitalWrite(9, HIGH);
     digitalWrite(10, HIGH);
     digitalWrite(11, HIGH);
-}*/
+  }*/
 
 void lightOn(cRGB color, int8_t StartPixel, int8_t StopPixel) {
-	// Light On
-	if (StartPixel == -1 or StopPixel==-1 or StopPixel<StartPixel or StartPixel>NUMPIXELS or StopPixel>NUMPIXELS) {  // if neither start nor stop is defined or invalid range, go through the whole stripe
-		for (uint8_t i = 0; i < NUMPIXELS; i++) {
-			pixels.set_crgb_at(i, color);
-		}
-	} else {
-    for (uint8_t i = StartPixel-1; i < StopPixel; i++) {
+  // Light On
+  if (StartPixel == -1 or StopPixel == -1 or StopPixel<StartPixel or StartPixel>NUMPIXELS or StopPixel > NUMPIXELS) { // if neither start nor stop is defined or invalid range, go through the whole stripe
+    for (uint8_t i = 0; i < NUMPIXELS; i++) {
       pixels.set_crgb_at(i, color);
     }
-	}
-	pixels.sync();
+  } else {
+    for (uint8_t i = StartPixel - 1; i < StopPixel; i++) {
+      pixels.set_crgb_at(i, color);
+    }
+  }
+  pixels.sync();
 } //lightOn
 
 void lightOff() {
-// shut Off
-	cRGB value;
-	value.b = 0;
-	value.g = 0;
-	value.r = 0; // RGB Value -> Off
-	for (uint16_t i = 0; i < NUMPIXELS; i++) {
-		pixels.set_crgb_at(i, value);
-	}
-	pixels.sync();
+  // shut Off
+  cRGB value;
+  value.b = 0;
+  value.g = 0;
+  value.r = 0; // RGB Value -> Off
+  for (uint16_t i = 0; i < NUMPIXELS; i++) {
+    pixels.set_crgb_at(i, value);
+  }
+  pixels.sync();
 } //lightOff
 
 void lightIgnition(cRGB color, uint16_t time, uint8_t type) {
-	cRGB value = color;
-	//switch (type) {
-	//case 0:
-// Light up the ledstrings Movie-like
-    //RampPixels(time, true);
-		for (uint16_t i = 0; i < NUMPIXELS; i++) {
-			pixels.set_crgb_at(i, value);
-			i++;
-			pixels.set_crgb_at(i, value);
-			pixels.sync();
-      //delay(time/NUMPIXELS);
-			delayMicroseconds((time * 1000) / NUMPIXELS);
-		}
-		//Serial.println(//TODO-pixels.getBrightness());
-		//break;
-		/*
-		 case 1:
-		 for (int8_t i = 5; i >= 0; i--) {
-		 for (uint8_t j = 0; j <= i; j++) {
-		 if (j > 0) {
-		 digitalWrite(ledPins[j - 1], LOW);
-		 }
-		 digitalWrite(ledPins[j], HIGH);
-		 delay(time / 20);
-		 }
-		 }
-		 break;
-		 */
-	//}
+  cRGB value = color;
+  //switch (type) {
+  //case 0:
+  // Light up the ledstrings Movie-like
+  //RampPixels(time, true);
+  for (uint16_t i = 0; i < NUMPIXELS; i++) {
+    pixels.set_crgb_at(i, value);
+    i++;
+    pixels.set_crgb_at(i, value);
+    pixels.sync();
+    //delay(time/NUMPIXELS);
+    delayMicroseconds((time * 1000) / NUMPIXELS);
+  }
+  //Serial.println(//TODO-pixels.getBrightness());
+  //break;
+  /*
+    case 1:
+    for (int8_t i = 5; i >= 0; i--) {
+    for (uint8_t j = 0; j <= i; j++) {
+    if (j > 0) {
+    digitalWrite(ledPins[j - 1], LOW);
+    }
+    digitalWrite(ledPins[j], HIGH);
+    delay(time / 20);
+    }
+    }
+    break;
+  */
+  //}
 }				//lightIgnition
 
 void lightRetract(uint16_t time, uint8_t type) {
-	//switch (type) {
-	//case 0:
-		// Light off the ledstrings Movie Like
-		cRGB value;
-		value.b = 0;
-		value.g = 0;
-		value.r = 0; // RGB Value -> Off
-    //RampPixels(time, false);
-		for (uint16_t i = NUMPIXELS; i > 0; i--) {
-			//BUG CORRECTION:
-			//Not uint8_t here because Arduino nano clones did go
-			// on an infinite loop for no reason making the board
-			// crash at some point.
-			pixels.set_crgb_at(i, value);
-			i--;
-			pixels.set_crgb_at(i, value);
-			pixels.sync();
-			delayMicroseconds((time * 1000) / NUMPIXELS);
-		}
-		//break;
-		/*
-		 case 1:
-		 // Light off the ledstrings invert
-		 for (int8_t i = 5; i >= 0; i--) {
-		 for (uint8_t j = 0; j <= i; j++) {
-		 if (j > 0) {
-		 digitalWrite(ledPins[j - 1], HIGH);
-		 }
-		 digitalWrite(ledPins[j], LOW);
-		 delay(time / 20);
-		 }
-		 }
-		 break;
-		 */
-	//}
+  //switch (type) {
+  //case 0:
+  // Light off the ledstrings Movie Like
+  cRGB value;
+  value.b = 0;
+  value.g = 0;
+  value.r = 0; // RGB Value -> Off
+  //RampPixels(time, false);
+  for (uint16_t i = NUMPIXELS; i > 0; i--) {
+    //BUG CORRECTION:
+    //Not uint8_t here because Arduino nano clones did go
+    // on an infinite loop for no reason making the board
+    // crash at some point.
+    pixels.set_crgb_at(i, value);
+    i--;
+    pixels.set_crgb_at(i, value);
+    pixels.sync();
+    delayMicroseconds((time * 1000) / NUMPIXELS);
+  }
+  //break;
+  /*
+    case 1:
+    // Light off the ledstrings invert
+    for (int8_t i = 5; i >= 0; i--) {
+    for (uint8_t j = 0; j <= i; j++) {
+    if (j > 0) {
+    digitalWrite(ledPins[j - 1], HIGH);
+    }
+    digitalWrite(ledPins[j], LOW);
+    delay(time / 20);
+    }
+    }
+    break;
+  */
+  //}
 }				//lightRetract
 
 void lightBlasterEffect(uint8_t pixel, uint8_t range, uint8_t SndFnt_MainColor) {
   cRGB blastcolor;
   cRGB fadecolor;
-  blastcolor.r=currentColor.r;
-  blastcolor.g=currentColor.g;
-  blastcolor.g=currentColor.b;
+  blastcolor.r = currentColor.r;
+  blastcolor.g = currentColor.g;
+  blastcolor.g = currentColor.b;
   getColor(SndFnt_MainColor);  // get the main blade color for the fading effect
-  for (uint8_t i = 0; i<=2*range-1;i++) {
-    for (uint8_t j = 0; j <=range; j++) {
-  	//for (uint8_t j = (pixel - range); j < (pixel + range); j++) {
+  for (uint8_t i = 0; i <= 2 * range - 1; i++) {
+    for (uint8_t j = 0; j <= range; j++) {
+      //for (uint8_t j = (pixel - range); j < (pixel + range); j++) {
       //if (i<=range) {
-        //fadecolor.r=((2*range-(i))*blastcolor.r + ((i)*currentColor.r))/2*range;
-        //fadecolor.g=((2*range-(i))*blastcolor.g + ((i)*currentColor.g))/2*range;
-        //fadecolor.b=((2*range-(i))*blastcolor.b + ((i)*currentColor.b))/2*range;
+      //fadecolor.r=((2*range-(i))*blastcolor.r + ((i)*currentColor.r))/2*range;
+      //fadecolor.g=((2*range-(i))*blastcolor.g + ((i)*currentColor.g))/2*range;
+      //fadecolor.b=((2*range-(i))*blastcolor.b + ((i)*currentColor.b))/2*range;
       //}
       //else {
-        //fadecolor.r=((range-(i-range+j))*blastcolor.r + ((i-range-j)*currentColor.r))/range;
-        //fadecolor.g=((range-(i-range+j))*blastcolor.g + ((i-range-j)*currentColor.g))/range;
-        //fadecolor.b=((range-(i-range+j))*blastcolor.b + ((i-range-j)*currentColor.b))/range;
+      //fadecolor.r=((range-(i-range+j))*blastcolor.r + ((i-range-j)*currentColor.r))/range;
+      //fadecolor.g=((range-(i-range+j))*blastcolor.g + ((i-range-j)*currentColor.g))/range;
+      //fadecolor.b=((range-(i-range+j))*blastcolor.b + ((i-range-j)*currentColor.b))/range;
       //}
       //fadecolor.r=((range-(i-abs(j-pixel)))*blastcolor.r + ((i+abs(j-pixel))*currentColor.r))/range;
       //fadecolor.g=((range-(i-abs(j-pixel)))*blastcolor.g + ((i+abs(j-pixel))*currentColor.g))/range;
@@ -196,67 +200,69 @@ void lightBlasterEffect(uint8_t pixel, uint8_t range, uint8_t SndFnt_MainColor) 
       //fadecolor.b=((range-i)*blastcolor.b + (i*currentColor.b))/range;
       pixels.set_crgb_at(j, fadecolor);
 
-      if (j==i) {
-      //if ((j==pixel-i) or (j==pixel+i)) {
-        pixels.set_crgb_at(pixel-j, blastcolor);
-        pixels.set_crgb_at(pixel+j, blastcolor);
+      if (j == i) {
+        //if ((j==pixel-i) or (j==pixel+i)) {
+        pixels.set_crgb_at(pixel - j, blastcolor);
+        pixels.set_crgb_at(pixel + j, blastcolor);
       }
       else {
-      //else if ((j<pixel-i) or (j>pixel+i)){
-        pixels.set_crgb_at(pixel-j, currentColor);
-        pixels.set_crgb_at(pixel+j, currentColor);
+        //else if ((j<pixel-i) or (j>pixel+i)){
+        pixels.set_crgb_at(pixel - j, currentColor);
+        pixels.set_crgb_at(pixel + j, currentColor);
       }
-  	}
-  	pixels.sync();
-    delay(BLASTER_FX_DURATION/(2*range));  // blast deflect should last for ~500ms
+    }
+    pixels.sync();
+    delay(BLASTER_FX_DURATION / (2 * range)); // blast deflect should last for ~500ms
   }
 }
 
-void lightFlicker(uint8_t value,uint8_t AState) {
-	uint8_t variation = abs(analogRead(SPK1) - analogRead(SPK2));
-	uint8_t brightness;
+void lightFlicker(uint8_t value, uint8_t AState) {
+  uint8_t variation = abs(analogRead(SPK1) - analogRead(SPK2));
+  uint8_t brightness;
 #ifdef FIREBLADE
 
-  if (AState==AS_BLADELOCKUP) {
-    Fire_Cooling=150;
-    Fire_Sparking=50;
+  if (AState == AS_BLADELOCKUP) {
+    Fire_Cooling = 150;
+    Fire_Sparking = 50;
   }
   else {
-    Fire_Cooling=50;
-    Fire_Sparking=100;
+    Fire_Cooling = 50;
+    Fire_Sparking = 100;
   }
-    FireBlade();
-    pixels.sync(); // Sends the data to the LEDs
+  FireBlade();
+  pixels.sync(); // Sends the data to the LEDs
 #else
-//  if (not value) {
-// Calculation of the amount of brightness to fade
-//     brightness = constrain(MAX_BRIGHTNESS
-//    - (abs(analogRead(SPK1) - analogRead(SPK2)))/8,0,255);
-//  } else {
-//    brightness = value;
-//  }
+  //  if (not value) {
+  // Calculation of the amount of brightness to fade
+  //     brightness = constrain(MAX_BRIGHTNESS
+  //    - (abs(analogRead(SPK1) - analogRead(SPK2)))/8,0,255);
+  //  } else {
+  //    brightness = value;
+  //  }
 
-int flickFactor = random(0,255);
-if (flickFactor > 3 && flickFactor < 170) { flickFactor = 255; }
-//brightness = 255 * flickFactor / 100;
-brightness = flickFactor;
+  int flickFactor = random(0, 255);
+  if (flickFactor > 3 && flickFactor < 170) {
+    flickFactor = 255;
+  }
+  //brightness = 255 * flickFactor / 100;
+  brightness = flickFactor;
 
 #if defined LS_HEAVY_DEBUG
-	Serial.print(F("Brightness: "));
-	Serial.print(brightness);
-	Serial.print(F("   SPK1: "));
-	Serial.print(analogRead(SPK1));
-	Serial.print(F("   SPK2: "));
-	Serial.println(analogRead(SPK2));
+  Serial.print(F("Brightness: "));
+  Serial.print(brightness);
+  Serial.print(F("   SPK1: "));
+  Serial.print(analogRead(SPK1));
+  Serial.print(F("   SPK2: "));
+  Serial.println(analogRead(SPK2));
 #endif
 
-//	switch (type) {
-//	case 0:
-	// std Flickering
+  //	switch (type) {
+  //	case 0:
+  // std Flickering
   cRGB color;
-  if (AState==AS_BLADELOCKUP) { //animate blade in lockup mode
+  if (AState == AS_BLADELOCKUP) { //animate blade in lockup mode
     // gives 25% chance to flick larger range for better randomization
-    int lockupFlick = random(0,39);
+    int lockupFlick = random(0, 39);
     if (lockupFlick < 10) {
       color.b = brightness * currentColor.r / rgbFactor;
       color.g = brightness * currentColor.g / rgbFactor;
@@ -281,101 +287,101 @@ brightness = flickFactor;
   }
 
   for (uint16_t i = 0; i <= NUMPIXELS; i++) {
-//    int instabilityFactor = random (0,100);
-//    cRGB instabilityColor;
-//    instabilityColor.r =255;
-//    instabilityColor.g=255;
-//    instabilityColor.b=255;
-//    if ( !instabilityFactor ) { pixels[i] = instabilityColor); }
-//    else {
-      pixels.set_crgb_at(i, color);
-//    }
+    //    int instabilityFactor = random (0,100);
+    //    cRGB instabilityColor;
+    //    instabilityColor.r =255;
+    //    instabilityColor.g=255;
+    //    instabilityColor.b=255;
+    //    if ( !instabilityFactor ) { pixels[i] = instabilityColor); }
+    //    else {
+    pixels.set_crgb_at(i, color);
+    //    }
   }
-	pixels.sync();
+  pixels.sync();
 
-//		break;
-	/*
-	 case 1:
-	 // pulse Flickering
-	 for (uint8_t i = 0; i <= 5; i++) {
-	 if (i != flickerPos)
-	 analogWrite(ledPins[i], brightness - variation / 2);
-	 else
-	 analogWrite(ledPins[i], MAX_BRIGHTNESS);
-	 }
-	 if ((flickerPos != 0
-	 and millis() - lastFlicker > (120 - (100 - 15 * flickerPos)))
-	 or (flickerPos == 0 and millis() - lastFlicker > 300)) {
-	 flickerPos++;
-	 lastFlicker = millis();
-	 if (flickerPos == 6) {
-	 flickerPos = 0;
-	 }
-	 }
-	 break;
-	 case 2:
-	 // anarchic Flickering
-	 for (uint8_t i = 0; i <= 5; i++) {
-	 randomSeed(analogRead(ledPins[i]));
-	 analogWrite(ledPins[i],
-	 MAX_BRIGHTNESS - random(variation, variation * 2));
-	 }
-	 break;
-	 */
-//	}
+  //		break;
+  /*
+    case 1:
+    // pulse Flickering
+    for (uint8_t i = 0; i <= 5; i++) {
+    if (i != flickerPos)
+    analogWrite(ledPins[i], brightness - variation / 2);
+    else
+    analogWrite(ledPins[i], MAX_BRIGHTNESS);
+    }
+    if ((flickerPos != 0
+    and millis() - lastFlicker > (120 - (100 - 15 * flickerPos)))
+    or (flickerPos == 0 and millis() - lastFlicker > 300)) {
+    flickerPos++;
+    lastFlicker = millis();
+    if (flickerPos == 6) {
+    flickerPos = 0;
+    }
+    }
+    break;
+    case 2:
+    // anarchic Flickering
+    for (uint8_t i = 0; i <= 5; i++) {
+    randomSeed(analogRead(ledPins[i]));
+    analogWrite(ledPins[i],
+    MAX_BRIGHTNESS - random(variation, variation * 2));
+    }
+    break;
+  */
+  //	}
 #endif
 } //lightFlicker
 
 /*
- * Colors are defined in percentage of brightness.
- *
- */
+   Colors are defined in percentage of brightness.
+
+*/
 void getColor(uint8_t color) {
   switch (color) {
-  case 0:
-//Red
-    currentColor.r = 100;
-    currentColor.g = 0;
-    currentColor.b = 0;
-    break;
-  case 1:
-//Green
-    currentColor.r = 0;
-    currentColor.g = 100;
-    currentColor.b = 0;
-    break;
-  case 2:
-//Blue
-    currentColor.r = 0;
-    currentColor.g = 0;
-    currentColor.b = 100;
-    break;
-  case 3:
-//Aqua
-    currentColor.r = 0;
-    currentColor.g = 100;
-    currentColor.b = 100;
-    break;
-  case 4:
-//Blue
-    currentColor.r = 0;
-    currentColor.g = 0;
-    currentColor.b = 100;
-    break;
-  case 5:
-//Fuschia
-    currentColor.r = 100;
-    currentColor.g = 0;
-    currentColor.b = 100;
-    break;
+    case 0:
+      //Red
+      currentColor.r = 100;
+      currentColor.g = 0;
+      currentColor.b = 0;
+      break;
+    case 1:
+      //Green
+      currentColor.r = 0;
+      currentColor.g = 100;
+      currentColor.b = 0;
+      break;
+    case 2:
+      //Blue
+      currentColor.r = 0;
+      currentColor.g = 0;
+      currentColor.b = 100;
+      break;
+    case 3:
+      //Aqua
+      currentColor.r = 0;
+      currentColor.g = 100;
+      currentColor.b = 100;
+      break;
+    case 4:
+      //Blue
+      currentColor.r = 0;
+      currentColor.g = 0;
+      currentColor.b = 100;
+      break;
+    case 5:
+      //Fuschia
+      currentColor.r = 100;
+      currentColor.g = 0;
+      currentColor.b = 100;
+      break;
   }
 } //getColor
 
 /*// neopixel ramp code from jbkuma
-void RampPixels(uint16_t RampDuration, bool DirectionUpDown) {
+  void RampPixels(uint16_t RampDuration, bool DirectionUpDown) {
   unsigned long ignitionStart = millis();  //record start of ramp function
   cRGB value;
-#ifdef FIREBLADE
+  #ifdef FIREBLADE
   for (unsigned int i=0; i<NUMPIXELS; (i=i+5)) { // turn on/off one LED at a time
      FireBlade();
      for(unsigned int j=0; j<NUMPIXELS; j++ ) { // fill up string with data
@@ -391,7 +397,7 @@ void RampPixels(uint16_t RampDuration, bool DirectionUpDown) {
       }
       pixels.sync(); // Sends the data to the LEDs
     }
-#else
+  #else
   for (unsigned int i = 0; i < NUMPIXELS; i = NUMPIXELS*(millis()-ignitionStart)/RampDuration) { // turn on/off the number of LEDs that match rap timing
       //generate a flicker effect between 65% and 115% of MAX_BRIGHTNESS, with a 1 in 115 chance of flicking to 0
       int flickFactor = random(0,115);
@@ -415,92 +421,92 @@ void RampPixels(uint16_t RampDuration, bool DirectionUpDown) {
      pixels.sync(); // Sends the data to the LEDs
      delay(RampDuration/NUMPIXELS); //match the ramp duration to the number of pixels in the string
   }
-#endif
-}*/
+  #endif
+  }*/
 
 #ifdef FIREBLADE
 void FireBlade() {
-// Array of temperature readings at each simulation cell
+  // Array of temperature readings at each simulation cell
   int pixelnumber;
 
   // Step 1.  Cool down every cell a little
 #ifdef CROSSGUARDSABER
-    for( int i = 0; i < MN_STRIPE; i++) {
-      heat[i] = constrain(heat[i] - random(((Fire_Cooling * 10) / MN_STRIPE) + 2),0,255);
-    }
-    for( int i = 0; i < CG_STRIPE; i++) {
-      heat_cg[i] = constrain(heat_cg[i] - random(5),0,255);
-    }
+  for ( int i = 0; i < MN_STRIPE; i++) {
+    heat[i] = constrain(heat[i] - random(((Fire_Cooling * 10) / MN_STRIPE) + 2), 0, 255);
+  }
+  for ( int i = 0; i < CG_STRIPE; i++) {
+    heat_cg[i] = constrain(heat_cg[i] - random(5), 0, 255);
+  }
 #else
-    for( int i = 0; i < NUMPIXELS; i++) {
-      // the random() function in this loop causes phantom swings
-      heat[i] = constrain(heat[i] - random(((Fire_Cooling * 10) / NUMPIXELS) + 2),0,255);
-      //delayMicroseconds(1000);
-    }
+  for ( int i = 0; i < NUMPIXELS; i++) {
+    // the random() function in this loop causes phantom swings
+    heat[i] = constrain(heat[i] - random(((Fire_Cooling * 10) / NUMPIXELS) + 2), 0, 255);
+    //delayMicroseconds(1000);
+  }
 #endif
 
-    // Step 2.  Heat from each cell drifts 'up' and diffuses a little
+  // Step 2.  Heat from each cell drifts 'up' and diffuses a little
 #ifdef CROSSGUARDSABER
-    for( int k= MN_STRIPE - 1; k >= 2; k--) {
-      heat[k] = (heat[k - 1] + heat[k - 2] + heat[k - 2] ) / 3;
-    }
-    for( int k= CG_STRIPE - 1; k >= 2; k--) {
-      heat_cg[k] = (heat_cg[k - 1] + heat_cg[k - 2] + heat_cg[k - 2] ) / 3;
-    }
+  for ( int k = MN_STRIPE - 1; k >= 2; k--) {
+    heat[k] = (heat[k - 1] + heat[k - 2] + heat[k - 2] ) / 3;
+  }
+  for ( int k = CG_STRIPE - 1; k >= 2; k--) {
+    heat_cg[k] = (heat_cg[k - 1] + heat_cg[k - 2] + heat_cg[k - 2] ) / 3;
+  }
 #else
-    for( int k= NUMPIXELS - 1; k >= 2; k--) {
-      heat[k] = (heat[k - 1] + heat[k - 2] + heat[k - 2] ) / 3;
-    }
+  for ( int k = NUMPIXELS - 1; k >= 2; k--) {
+    heat[k] = (heat[k - 1] + heat[k - 2] + heat[k - 2] ) / 3;
+  }
 #endif
 
-    // Step 3.  Randomly ignite new 'sparks' of heat near the bottom
+  // Step 3.  Randomly ignite new 'sparks' of heat near the bottom
 #ifdef CROSSGUARDSABER
-    if( random(255) < Fire_Sparking ) {
-      int y = random(7);
-      heat[y] = constrain(heat[y] + random(95)+160,0,255 );
-    }
-    if( random(255) < 10 ) {
-      int y = random(4);
-      heat_cg[y] = constrain(heat_cg[0] + random(95)+160,0,255 );
-    }
+  if ( random(255) < Fire_Sparking ) {
+    int y = random(7);
+    heat[y] = constrain(heat[y] + random(95) + 160, 0, 255 );
+  }
+  if ( random(255) < 10 ) {
+    int y = random(4);
+    heat_cg[y] = constrain(heat_cg[0] + random(95) + 160, 0, 255 );
+  }
 #else
-    if( random(255) < Fire_Sparking ) {
-      int y = random(7);
-      heat[y] = constrain(heat[y] + random(95)+160,0,255 );
-    }
+  if ( random(255) < Fire_Sparking ) {
+    int y = random(7);
+    heat[y] = constrain(heat[y] + random(95) + 160, 0, 255 );
+  }
 #endif
 
-    // Step 4.  Map from heat cells to LED colors
+  // Step 4.  Map from heat cells to LED colors
 #ifdef CROSSGUARDSABER
-    for( int j = 0; j < CG_STRIPE; j++) {
-      cRGB color = HeatColor( heat_cg[j]);
-      //if( gReverseDirection ) {
-      //  pixelnumber = (CG_STRIPE-1) - j;
-      //} else {
-      //  pixelnumber = j;
-      //}
-      LED.set_cRGB_at(j, color); // Set value at LED found at index j
-    }
-    for( int j = CG_STRIPE; j < CG_STRIPE + MN_STRIPE; j++) {
-      cRGB color = HeatColor( heat[j]);
-      //if( gReverseDirection ) {
-      //  pixelnumber = (CG_STRIPE + MN_STRIPE-1) - j;
-      //} else {
-      //  pixelnumber = j;
-      //}
-      pixels[j] = color; // Set value at LED found at index j
-    }
+  for ( int j = 0; j < CG_STRIPE; j++) {
+    cRGB color = HeatColor( heat_cg[j]);
+    //if( gReverseDirection ) {
+    //  pixelnumber = (CG_STRIPE-1) - j;
+    //} else {
+    //  pixelnumber = j;
+    //}
+    LED.set_cRGB_at(j, color); // Set value at LED found at index j
+  }
+  for ( int j = CG_STRIPE; j < CG_STRIPE + MN_STRIPE; j++) {
+    cRGB color = HeatColor( heat[j]);
+    //if( gReverseDirection ) {
+    //  pixelnumber = (CG_STRIPE + MN_STRIPE-1) - j;
+    //} else {
+    //  pixelnumber = j;
+    //}
+    pixels[j] = color; // Set value at LED found at index j
+  }
 #else
-    for( int j = 0; j < NUMPIXELS; j++) {
-      cRGB color = HeatColor( heat[j]);
-      int pixelnumber;
-      //if( gReverseDirection ) {
-      //  pixelnumber = (NUMPIXELS-1) - j;
-      //} else {
-      //  pixelnumber = j;
-      //}
-      pixels[j] = color; // Set value at LED found at index j
-    }
+  for ( int j = 0; j < NUMPIXELS; j++) {
+    cRGB color = HeatColor( heat[j]);
+    int pixelnumber;
+    //if( gReverseDirection ) {
+    //  pixelnumber = (NUMPIXELS-1) - j;
+    //} else {
+    //  pixelnumber = j;
+    //}
+    pixels[j] = color; // Set value at LED found at index j
+  }
 #endif
 }
 
@@ -517,64 +523,64 @@ void FireBlade() {
 
 cRGB HeatColor( uint8_t temperature)
 {
-    cRGB heatcolor;
+  cRGB heatcolor;
 
-    // Scale 'heat' down from 0-255 to 0-191,
-    // which can then be easily divided into three
-    // equal 'thirds' of 64 units each.
-    uint8_t t192 = scale8_video( temperature, 192);
-     //Serial.print(F("scale8_video_result: "));
-     //Serial.print(temperature);Serial.print("/t");Serial.println(t192);
+  // Scale 'heat' down from 0-255 to 0-191,
+  // which can then be easily divided into three
+  // equal 'thirds' of 64 units each.
+  uint8_t t192 = scale8_video( temperature, 192);
+  //Serial.print(F("scale8_video_result: "));
+  //Serial.print(temperature);Serial.print("/t");Serial.println(t192);
 
-    // calculate a value that ramps up from
-    // zero to 255 in each 'third' of the scale.
-    uint8_t heatramp = t192 & 0x3F; // 0..63
-    heatramp <<= 2; // scale up to 0..252
+  // calculate a value that ramps up from
+  // zero to 255 in each 'third' of the scale.
+  uint8_t heatramp = t192 & 0x3F; // 0..63
+  heatramp <<= 2; // scale up to 0..252
 
-    // now figure out which third of the spectrum we're in:
-    if( t192 & 0x80) {
-        // we're in the hottest third
-        heatcolor.r = 255; // full red
-        heatcolor.g = 255; // full green
-        heatcolor.b = heatramp; // ramp up blue
+  // now figure out which third of the spectrum we're in:
+  if ( t192 & 0x80) {
+    // we're in the hottest third
+    heatcolor.r = 255; // full red
+    heatcolor.g = 255; // full green
+    heatcolor.b = heatramp; // ramp up blue
 
-    } else if( t192 & 0x40 ) {
-        // we're in the middle third
-        heatcolor.r = 255; // full red
-        heatcolor.g = heatramp; // ramp up green
-        heatcolor.b = 0; // no blue
+  } else if ( t192 & 0x40 ) {
+    // we're in the middle third
+    heatcolor.r = 255; // full red
+    heatcolor.g = heatramp; // ramp up green
+    heatcolor.b = 0; // no blue
 
-    } else {
-        // we're in the coolest third
-        heatcolor.r = heatramp; // ramp up red
-        heatcolor.g = 0; // no green
-        heatcolor.b = 0; // no blue
-    }
+  } else {
+    // we're in the coolest third
+    heatcolor.r = heatramp; // ramp up red
+    heatcolor.g = 0; // no green
+    heatcolor.b = 0; // no blue
+  }
 
-    return heatcolor;
+  return heatcolor;
 }
 
 uint8_t scale8_video( uint8_t i, uint8_t scale)
 {
-//    uint8_t j = (((int)i * (int)scale) >> 8) + ((i&&scale)?1:0);
-//    // uint8_t nonzeroscale = (scale != 0) ? 1 : 0;
-//    // uint8_t j = (i == 0) ? 0 : (((int)i * (int)(scale) ) >> 8) + nonzeroscale;
-//    return j;
-    uint8_t j=0;
-    asm volatile(
-        "  tst %[i]\n\t"
-        "  breq L_%=\n\t"
-        "  mul %[i], %[scale]\n\t"
-        "  mov %[j], r1\n\t"
-        "  clr __zero_reg__\n\t"
-        "  cpse %[scale], r1\n\t"
-        "  subi %[j], 0xFF\n\t"
-        "L_%=: \n\t"
-        : [j] "+a" (j)
-        : [i] "a" (i), [scale] "a" (scale)
-        : "r0", "r1");
+  //    uint8_t j = (((int)i * (int)scale) >> 8) + ((i&&scale)?1:0);
+  //    // uint8_t nonzeroscale = (scale != 0) ? 1 : 0;
+  //    // uint8_t j = (i == 0) ? 0 : (((int)i * (int)(scale) ) >> 8) + nonzeroscale;
+  //    return j;
+  uint8_t j = 0;
+  asm volatile(
+    "  tst %[i]\n\t"
+    "  breq L_%=\n\t"
+    "  mul %[i], %[scale]\n\t"
+    "  mov %[j], r1\n\t"
+    "  clr __zero_reg__\n\t"
+    "  cpse %[scale], r1\n\t"
+    "  subi %[j], 0xFF\n\t"
+    "L_%=: \n\t"
+    : [j] "+a" (j)
+    : [i] "a" (i), [scale] "a" (scale)
+    : "r0", "r1");
 
-    return j;
+  return j;
 }
 
 #endif
@@ -587,34 +593,34 @@ uint8_t scale8_video( uint8_t i, uint8_t scale)
 
 void accentLEDControl( AccentLedAction_En AccentLedAction) {
 
-  if (AccentLedAction==AL_PULSE) {
-    #if defined HARD_ACCENT
-        if (millis() - lastAccent <= 400) {
-          analogWrite(ACCENT_LED, millis() - lastAccent);
-        } else if (millis() - lastAccent > 400
-            and millis() - lastAccent <= 800) {
-          analogWrite(ACCENT_LED, 800 - (millis() - lastAccent));
-        } else {
-          lastAccent = millis();
-        }
-    #endif
+  if (AccentLedAction == AL_PULSE) {
+#if defined HARD_ACCENT
+    if (millis() - lastAccent <= 400) {
+      analogWrite(ACCENT_LED, millis() - lastAccent);
+    } else if (millis() - lastAccent > 400
+               and millis() - lastAccent <= 800) {
+      analogWrite(ACCENT_LED, 800 - (millis() - lastAccent));
+    } else {
+      lastAccent = millis();
+    }
+#endif
 
-    #if defined SOFT_ACCENT
+#if defined SOFT_ACCENT
 
-        PWM();
+    PWM();
 
-        if (millis() - lastAccent >= 20) {
-          // moved to own funciton for clarity
-          fadeAccent();
-          lastAccent = millis();
-        }
-    #endif
+    if (millis() - lastAccent >= 20) {
+      // moved to own funciton for clarity
+      fadeAccent();
+      lastAccent = millis();
+    }
+#endif
   }
-  else if (AccentLedAction==AL_ON) {
-    digitalWrite(ACCENT_LED,HIGH);
+  else if (AccentLedAction == AL_ON) {
+    digitalWrite(ACCENT_LED, HIGH);
   }
   else {  // AL_OFF
-    digitalWrite(ACCENT_LED,LOW);
+    digitalWrite(ACCENT_LED, LOW);
   }
 }
 
@@ -657,111 +663,183 @@ void fadeAccent() {
 #endif
 #endif
 
-#ifdef MULTICOLOR_ACCENT_LED
-void accentLEDControl( AccentLedAction_En AccentLedAction, cRGB color) {
+#if defined MULTICOLOR_CRYSTAL_LED
+void crystalLEDControl(CrystalLedAction_En CrystalLedAction, cRGB color) {
 
-  Serial.print(F("Color R: ")); Serial.println(color.r);
-  Serial.print(F("Color G: ")); Serial.println(color.g);
-  Serial.print(F("Color B: ")); Serial.println(color.b);
-
+#ifdef CRYSTAL_COMMON_ANODE // If we have a common anode
   cRGB value;
-  #ifdef COMMON_ANODE
   value.r = 255 - color.r;
   value.g = 255 - color.g;
   value.b = 255 - color.b;
-  #endif
 
-  if (AccentLedAction==AL_PULSE) {
-    #if defined HARD_ACCENT
-        if (millis() - lastAccent <= 400) {
-          analogWrite(MULTICOLOR_ACCENT_LED, millis() - lastAccent);
-        } else if (millis() - lastAccent > 400
-            and millis() - lastAccent <= 800) {
-          analogWrite(MULTICOLOR_ACCENT_LED, 800 - (millis() - lastAccent));
-        } else {
-          lastAccent = millis();
-        }
-    #endif
+  // Pulse
+  if (CrystalLedAction == CL_PULSE) {
+    // TODO: Handle pulse
+  }
+
+  // On
+  else if (CrystalLedAction == CL_ON) {
+  }
+
+  // Off
+  else if (CrystalLedAction == CL_OFF) {
+  }
+
+#else // else if we have a common cathode
+
+  // Pulse
+  if (CrystalLedAction == CL_PULSE) {
+    // TODO: Handle pulse
+  }
+
+  // On
+  else if (CrystalLedAction == CL_ON) {
+    analogWrite(RED_ACCENT_LED, color.r);
+    analogWrite(GREEN_ACCENT_LED, color.g);
+    analogWrite(BLUE_ACCENT_LED, color.b);
+  }
+
+  // Off
+  else if (CrystalLedAction == CL_OFF) {
+    // TODO: progressive shutdown ??
+    analogWrite(RED_ACCENT_LED, 0);
+    analogWrite(GREEN_ACCENT_LED, 0);
+    analogWrite(BLUE_ACCENT_LED, 0);
+  }
+
+#endif
+
+}
+#endif
+
+
+#ifdef MULTICOLOR_ACCENT_LED
+void accentLEDControl( AccentLedAction_En AccentLedAction, cRGB color) {
+
+  /*
+    Serial.print(F("Color R: ")); Serial.println(color.r);
+    Serial.print(F("Color G: ")); Serial.println(color.g);
+    Serial.print(F("Color B: ")); Serial.println(color.b);*/
+
+#ifdef ACCENT_LED_COMMON_ANODE
+
+    cRGB value;
+    value.r = 255 - color.r;
+    value.g = 255 - color.g;
+    value.b = 255 - color.b;
+
+    // Pulse
+    if (AccentLedAction == AL_PULSE) {
+        #if defined HARD_ACCENT
+            if (millis() - lastAccent <= 400) {
+                analogWrite(ACCENT_LED_COMMON_ANODE, millis() - lastAccent);
+            } else if (millis() - lastAccent > 400 and millis() - lastAccent <= 800) {
+                analogWrite(ACCENT_LED_COMMON_ANODE, 800 - (millis() - lastAccent));
+            } else {
+                lastAccent = millis();
+            }
+        #endif // HARD ACCENT
 
     #if defined SOFT_ACCENT
-
         PWM();
-
         if (millis() - lastAccent >= 20) {
           // moved to own funciton for clarity
           fadeAccent();
           lastAccent = millis();
         }
-    #endif
-  }
-  else if (AccentLedAction==AL_ON) {
+    #endif // SOFT ACCENT
+    }
 
-  digitalWrite(MULTICOLOR_ACCENT_LED,HIGH);
-  #ifdef COMMON_ANODE
-  analogWrite(RED_ACCENT_LED,value.r);
-  analogWrite(GREEN_ACCENT_LED,value.g);
-  analogWrite(BLUE_ACCENT_LED,value.b);
-  #else
-  analogWrite(RED_ACCENT_LED,color.r);
-  analogWrite(GREEN_ACCENT_LED,color.g);
-  analogWrite(BLUE_ACCENT_LED,color.b);
-  #endif
-  }
-  else {  // AL_OFF
-    digitalWrite(MULTICOLOR_ACCENT_LED,LOW);
-  }
+    // On
+    else if (AccentLedAction == AL_ON) {
+        digitalWrite(ACCENT_LED_COMMON_ANODE, HIGH);
+        analogWrite(RED_ACCENT_LED, value.r);
+        analogWrite(GREEN_ACCENT_LED, value.g);
+        analogWrite(BLUE_ACCENT_LED, value.b);
+    }
+  
+    // Off
+    else {  // AL_OFF
+      digitalWrite(ACCENT_LED_COMMON_ANODE, LOW);
+    }
+
+#else // if common cathode
+
+    // Pulse
+    if (AccentLedAction == AL_PULSE) {
+        // TODO: pulse if cathode
+    }
+
+    // On
+    else if (AccentLedAction == AL_ON) {
+        analogWrite(RED_ACCENT_LED, color.r);
+        analogWrite(GREEN_ACCENT_LED, color.g);
+        analogWrite(BLUE_ACCENT_LED, color.b);
+    }
+
+    // Off
+    else {  // AL_OFF
+        analogWrite(RED_ACCENT_LED, 0);
+        analogWrite(GREEN_ACCENT_LED, 0);
+        analogWrite(BLUE_ACCENT_LED, 0); 
+    }
+#endif
 }
 #endif //MULTICOLOR_ACCENT_LED
 
 void BladeMeter (int meterLevel) {  //expects input of 0-100
   //normalize data if to max and min if out of range
-  if (meterLevel <= 0) { meterLevel = 0; }
-  if (meterLevel >= 100) { meterLevel = 100; }
+  if (meterLevel <= 0) {
+    meterLevel = 0;
+  }
+  if (meterLevel >= 100) {
+    meterLevel = 100;
+  }
 
 #ifdef PIXELBLADE // light blade as 3 color meter proportionate to length
   cRGB value;
   //set first pixel for accent LED compatability
   if (meterLevel < 30) {
-    value.r = MAX_BRIGHTNESS/2;
+    value.r = MAX_BRIGHTNESS / 2;
     value.g = 0;
     value.b = 0;
   } else if (meterLevel < 60) {
-    value.r = MAX_BRIGHTNESS/2*0.8;
-    value.g = MAX_BRIGHTNESS/2*0.6;
+    value.r = MAX_BRIGHTNESS / 2 * 0.8;
+    value.g = MAX_BRIGHTNESS / 2 * 0.6;
     value.b = 0;
   } else {
     value.r = 0;
-    value.g = MAX_BRIGHTNESS/2;
+    value.g = MAX_BRIGHTNESS / 2;
     value.b = 0;
   }
   pixels.set_crgb_at(0, value);
-  
+
 
   //set rest of blade
   for (unsigned int i = 1; i < NUMPIXELS; i++) { // turn on/off one LED at a time
-      if (i < NUMPIXELS * meterLevel / 100){
-        if (i < (30 * NUMPIXELS / 100)) {
-          value.r = MAX_BRIGHTNESS;
-          value.g = 0;
-          value.b = 0;
-        } else if (i < (60 * NUMPIXELS / 100)) {
-          value.r = MAX_BRIGHTNESS;
-          value.g = MAX_BRIGHTNESS;
-          value.b = 0;
-        } else {
-          value.r = 0;
-          value.g = MAX_BRIGHTNESS;
-          value.b = 0;
-        }
+    if (i < NUMPIXELS * meterLevel / 100) {
+      if (i < (30 * NUMPIXELS / 100)) {
+        value.r = MAX_BRIGHTNESS;
+        value.g = 0;
+        value.b = 0;
+      } else if (i < (60 * NUMPIXELS / 100)) {
+        value.r = MAX_BRIGHTNESS;
+        value.g = MAX_BRIGHTNESS;
+        value.b = 0;
       } else {
-      value.r=0;
-      value.g=0;
-      value.b=0;
+        value.r = 0;
+        value.g = MAX_BRIGHTNESS;
+        value.b = 0;
       }
-      pixels.set_crgb_at(i, value);
+    } else {
+      value.r = 0;
+      value.g = 0;
+      value.b = 0;
     }
-    pixels.sync(); // Sends the data to the LEDs
-//    delay(3);
+    pixels.set_crgb_at(i, value);
+  }
+  pixels.sync(); // Sends the data to the LEDs
+  //    delay(3);
 #endif
 }
 

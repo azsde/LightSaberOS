@@ -191,13 +191,26 @@ static const uint8_t rgbFactor = 255;
 
 
 /*
+ * MULTICOLOR_CRYSTAL_LED
+ * Enable/disable management of
+ * a crystal RGB LED
+ *************************************/
+#define MULTICOLOR_CRYSTAL_LED // Not sure it can be enabled / disabled
+#if defined MULTICOLOR_CRYSTAL_LED
+//#define CRYSTAL_COMMON_ANODE [PICK A NUMBER] // Comment if using common cathode
+#define RED_CRYSTAL_LED  3 //D3
+#define GREEN_CRYSTAL_LED  5 //D5
+#define BLUE_CRYSTAL_LED  6  //D6
+#endif
+
+/*
  * MULTICOLOR_ACCENT_LED
  * Enable/disable management of
  * a button accent led
  *************************************/
-#define MULTICOLOR_ACCENT_LED 14
-#if defined MULTICOLOR_ACCENT_LED
-#define COMMON_ANODE // Comment if using common cathode
+#define MULTICOLOR_ACCENT_LED // Comment if you don't have an RGB accent led
+#ifdef MULTICOLOR_ACCENT_LED
+#define ACCENT_LED_COMMON_ANODE 14 // Comment if using common cathode
 #define RED_ACCENT_LED  9 //A2
 #define GREEN_ACCENT_LED  10 //A3
 #define BLUE_ACCENT_LED  11  //.... A7 is input only ...
@@ -209,6 +222,7 @@ static const uint8_t rgbFactor = 255;
 #define HARD_ACCENT
 #endif
 #endif
+
 
 #define DFPLAYER_RX			8
 #define DFPLAYER_TX			7
