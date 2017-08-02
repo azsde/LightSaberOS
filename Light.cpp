@@ -660,7 +660,7 @@ void fadeAccent() {
 #ifdef MULTICOLOR_ACCENT_LED
 void accentLEDControl( AccentLedAction_En AccentLedAction, cRGB color) {
 
-  /*Serial.print(F("Color R: ")); Serial.println(color.r);
+  Serial.print(F("Color R: ")); Serial.println(color.r);
   Serial.print(F("Color G: ")); Serial.println(color.g);
   Serial.print(F("Color B: ")); Serial.println(color.b);
 
@@ -709,7 +709,7 @@ void accentLEDControl( AccentLedAction_En AccentLedAction, cRGB color) {
   }
   else {  // AL_OFF
     digitalWrite(MULTICOLOR_ACCENT_LED,LOW);
-  }*/
+  }
 }
 #endif //MULTICOLOR_ACCENT_LED
 

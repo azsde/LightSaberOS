@@ -264,6 +264,7 @@ void mainDoubleClick() {
             getColor(storage.sndProfile[storage.soundFont].mainColor);
             #ifdef COLORS
               lightOn(currentColor);
+              accentLEDControl(AL_ON, currentColor);
             #else  // not COLORS
               lightOn(currentColor, NUMPIXELS/2, NUMPIXELS-6);
             #endif
@@ -293,6 +294,7 @@ void mainDoubleClick() {
           getColor(storage.sndProfile[storage.soundFont].clashColor);
             #ifdef COLORS
               lightOn(currentColor);
+              accentLEDControl(AL_ON, currentColor);
             #else  // not COLORS
               lightOn(currentColor, 1, NUMPIXELS/2-1);
             #endif
@@ -309,6 +311,7 @@ void mainDoubleClick() {
           getColor(storage.sndProfile[storage.soundFont].blasterboltColor);
             #ifdef COLORS
               lightOn(currentColor);
+              accentLEDControl(AL_ON, currentColor);
             #else  // not COLORS
               lightOn(currentColor, NUMPIXELS*3/4-5, NUMPIXELS*3/4);
             #endif
