@@ -75,7 +75,7 @@ void accentLEDControl(AccentLedAction_En AccentLedAction);
 void accentLEDControl(AccentLedAction_En AccentLedAction, cRGB color);
 #endif
 
-#ifndef MULTICOLOR_CRYSTAL_LED
+#ifdef MULTICOLOR_CRYSTAL_LED
 void crystalLEDControl(CrystalLedAction_En CrystalLedAction, cRGB color);
 #endif
 

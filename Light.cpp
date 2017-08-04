@@ -694,17 +694,17 @@ void crystalLEDControl(CrystalLedAction_En CrystalLedAction, cRGB color) {
 
   // On
   else if (CrystalLedAction == CL_ON) {
-    analogWrite(RED_ACCENT_LED, color.r);
-    analogWrite(GREEN_ACCENT_LED, color.g);
-    analogWrite(BLUE_ACCENT_LED, color.b);
+    analogWrite(RED_CRYSTAL_LED, color.r);
+    analogWrite(GREEN_CRYSTAL_LED, color.g);
+    analogWrite(BLUE_CRYSTAL_LED, color.b);
   }
 
   // Off
   else if (CrystalLedAction == CL_OFF) {
     // TODO: progressive shutdown ??
-    analogWrite(RED_ACCENT_LED, 0);
-    analogWrite(GREEN_ACCENT_LED, 0);
-    analogWrite(BLUE_ACCENT_LED, 0);
+    analogWrite(RED_CRYSTAL_LED, 0);
+    analogWrite(GREEN_CRYSTAL_LED, 0);
+    analogWrite(BLUE_CRYSTAL_LED, 0);
   }
 
 #endif

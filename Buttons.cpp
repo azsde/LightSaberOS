@@ -93,7 +93,6 @@ analogWrite(BLUE_ACCENT_LED,0);
 }
 
 void mainClick() {
-  green();
 #if defined LS_BUTTON_DEBUG
 	Serial.println(F("Main button click."));
 #endif
@@ -134,6 +133,8 @@ void mainClick() {
           #if defined PIXELBLADE
             getColor(storage.sndProfile[storage.soundFont].mainColor);
             lightOn(currentColor);
+            accentLEDControl(AL_ON, currentColor);
+            crystalLEDControl(CL_ON, currentColor);
           #endif  // PIXELBLADE
 
       delay(150);
@@ -148,6 +149,8 @@ void mainClick() {
       #ifdef PIXELBLADE
         getColor(storage.sndProfile[storage.soundFont].mainColor);
         lightOn(currentColor);
+        accentLEDControl(AL_ON, currentColor);
+        crystalLEDControl(CL_ON, currentColor);
       #endif  // PIXELBLADE
     }
     else if (ConfigModeSubStates == CS_CLASHCOLOR) {
@@ -156,6 +159,8 @@ void mainClick() {
       #ifdef PIXELBLADE
         getColor(storage.sndProfile[storage.soundFont].clashColor);
         lightOn(currentColor);
+        accentLEDControl(AL_ON, currentColor);
+        crystalLEDControl(CL_ON, currentColor);
       #endif  // PIXELBLADE
     }
     else if (ConfigModeSubStates == CS_BLASTCOLOR) {
@@ -164,6 +169,8 @@ void mainClick() {
       #ifdef PIXELBLADE
         getColor(storage.sndProfile[storage.soundFont].blasterboltColor);
         lightOn(currentColor);
+        accentLEDControl(AL_ON, currentColor);
+        crystalLEDControl(CL_ON, currentColor);
       #endif  // PIXELBLADE
     }
     //modification=0;  // reset config mode change indicator
@@ -210,7 +217,6 @@ void mainClick() {
 } // mainClick
 
 void mainDoubleClick() {
-  blue();
 #if defined LS_BUTTON_DEBUG
 	Serial.println(F("Main button double click."));
 #endif
@@ -235,7 +241,7 @@ void mainDoubleClick() {
       #ifdef ACCENT_LED
       accentLEDControl(AL_ON);
       #else if MULTICOLOR_ACCENT_LED
-      //accentLEDControl(AL_ON,currentColor);
+      accentLEDControl(AL_ON,currentColor);
       #endif
     }
 } else if (SaberState==S_CONFIG) {
@@ -295,6 +301,7 @@ void mainDoubleClick() {
             #ifdef COLORS
               lightOn(currentColor);
               accentLEDControl(AL_ON, currentColor);
+              crystalLEDControl(CL_ON, currentColor);
             #else  // not COLORS
               lightOn(currentColor, 1, NUMPIXELS/2-1);
             #endif
@@ -312,6 +319,7 @@ void mainDoubleClick() {
             #ifdef COLORS
               lightOn(currentColor);
               accentLEDControl(AL_ON, currentColor);
+              crystalLEDControl(CL_ON, currentColor);
             #else  // not COLORS
               lightOn(currentColor, NUMPIXELS*3/4-5, NUMPIXELS*3/4);
             #endif
@@ -332,7 +340,6 @@ void mainDoubleClick() {
 } // mainDoubleClick
 
 void mainLongPressStart() {
-  red();
 #if defined LS_BUTTON_DEBUG
 	Serial.println(F("Main button longPress start"));
 #endif

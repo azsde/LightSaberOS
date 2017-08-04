@@ -472,6 +472,7 @@ void loop() {
   //digitalWrite(ACCENT_LED, HIGH);
 #else if MULTICOLOR_ACCENT_LED
   accentLEDControl(AL_ON, currentColor);
+  crystalLEDControl(CL_ON, currentColor);
 #endif
     }
 
@@ -889,6 +890,7 @@ void loop() {
       //ignition = false;
       //blasterBlocks = false;
       modification = 0;
+      crystalLEDControl(CL_OFF, currentColor);
 #if defined LS_INFO
       Serial.println(F("END ACTION"));
 #endif
