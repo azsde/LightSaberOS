@@ -15,12 +15,49 @@
 * DFPLAYER variables
 */
 
-#include "SoftwareSerial.h"
-#include "DFRobotDFPlayerMini.h"
-SoftwareSerial mySoftwareSerial(7, 8); // RX, TX
-DFRobotDFPlayerMini myDFPlayer;
-
 #include <SoftwareSerial.h> // interestingly the DFPlayer lib refuses
+//#include "DFRobotDFPlayerMini.h"
+#include <DFMiniMp3.h>
+SoftwareSerial mySoftwareSerial(7, 8); // RX, TX
+//DFRobotDFPlayerMini myDFPlayer;
+
+
+
+
+// implement a notification class,
+// its member methods will get called 
+//
+class Mp3Notify
+{
+public:
+  static void OnError(uint16_t errorCode)
+  {
+    // see DfMp3_Error for code meaning
+  }
+
+  static void OnPlayFinished(uint16_t globalTrack)
+  {
+
+  }
+
+  static void OnCardOnline(uint16_t code)
+  {
+  }
+
+  static void OnCardInserted(uint16_t code)
+  {
+
+  }
+
+  static void OnCardRemoved(uint16_t code)
+  {
+  }
+};
+
+
+DFMiniMp3<SoftwareSerial, Mp3Notify> mp3(mySoftwareSerial);
+
+
 
 #include <Arduino.h>
 #include <I2Cdev.h>
@@ -447,6 +484,9 @@ void loop() {
       Serial.println(F("START ACTION"));
 #endif
 
+      //Light up the crystal
+      crystalLEDControl(CL_ON, currentColor);
+
       //Play powerons wavs
       SinglePlay_Sound(soundFont.getPowerOn());
       // Light up the ledstrings
@@ -472,7 +512,6 @@ void loop() {
   //digitalWrite(ACCENT_LED, HIGH);
 #else if MULTICOLOR_ACCENT_LED
   accentLEDControl(AL_ON, currentColor);
-  crystalLEDControl(CL_ON, currentColor);
 #endif
     }
 
@@ -1110,15 +1149,18 @@ void HumRelaunch() {
 }
 
 void SinglePlay_Sound(uint8_t track) {
-  myDFPlayer.play(track);
+  //myDFPlayer.play(track);
+  mp3.playGlobalTrack(track);
 }
 
 void LoopPlay_Sound(uint8_t track) {
-  myDFPlayer.loop(track);
+  //myDFPlayer.loop(track);
+  mp3.loopGlobalTrack(track);
 }
 
 void Set_Volume() {
-  myDFPlayer.volume(storage.volume);
+  //myDFPlayer.volume(storage.volume);
+  mp3.setVolume(storage.volume);
   delay(50);
 }
 
@@ -1129,20 +1171,22 @@ void Set_Loop_Playback() {
 
 void InitDFPlayer() {
   mySoftwareSerial.begin(9600);
-  if (!myDFPlayer.begin(mySoftwareSerial)) {  //Use softwareSerial to communicate with mp3.
+  /*if (!myDFPlayer.begin(mySoftwareSerial)) {  //Use softwareSerial to communicate with mp3.
     Serial.println(F("Unable to communicate with DFPlayer:"));
     while(true);
   }
-  Serial.println(F("DFPlayer Mini online."));
-  myDFPlayer.volume(25);  //Set volume value. From 0 to 30
+  Serial.println(F("DFPlayer Mini online."));*/
+  mp3.begin();
+  mp3.setVolume(25);
 }
 
 void Pause_Sound() {
-  myDFPlayer.pause();
+  mp3.pause();
 }
 
 void Resume_Sound() {
-   myDFPlayer.start();
+   //myDFPlayer.start();
+   mp3.start();
 }
 
 // ====================================================================================
