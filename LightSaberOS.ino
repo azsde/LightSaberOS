@@ -195,7 +195,7 @@ void setup() {
 	// join I2C bus (I2Cdev library doesn't do this automatically)
 #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
 	Wire.begin();
-	TWBR = 24; // 400kHz I2C clock (200kHz if CPU is 8MHz). Comment this line if having compilation difficulties with TWBR.
+	TWBR = 103; // 400kHz I2C clock (200kHz if CPU is 8MHz). Comment this line if having compilation difficulties with TWBR.
 #elif I2CDEV_IMPLEMENTATION == I2CDEV_BUILTIN_FASTWIRE
 			Fastwire::setup(400, true);
 #endif
@@ -570,6 +570,10 @@ void loop() {
 #endif
           delay(CLASH_FX_DURATION);  // clash duration
 
+          // Restore light
+          getColor(storage.sndProfile[storage.soundFont].mainColor);
+          lightOn(currentColor);
+
         }
       }
     }
@@ -587,20 +591,15 @@ void loop() {
         SinglePlay_Sound(soundFont.getBlaster());
 
 #if defined PIXELBLADE
-#ifdef FIREBLADE
-        getColor(14);
-        lightOn(currentColor);
-#else
         lightOn(currentColor);
         blasterPixel = random(NUMPIXELS / 4, NUMPIXELS - 3); //momentary shut off one led segment
         blink = 0;
         getColor(storage.sndProfile[storage.soundFont].blasterboltColor);
-        //            lightBlasterEffect(blasterPixel, 3, storage.sndProfile[storage.soundFont].mainColor);
         lightBlasterEffect(blasterPixel, map(NUMPIXELS, 0, 120, 1, 3), storage.sndProfile[storage.soundFont].blasterboltColor);
-
-#endif
 #endif
         delay(BLASTER_FX_DURATION);  // blaster bolt deflect duration
+        getColor(storage.sndProfile[storage.soundFont].mainColor);
+        lightOn(currentColor);
         blaster = BLASTER_FLASH_TIME;
         // Some Soundfont may not have Blaster sounds
         if (millis() - sndSuppress > 50) {
@@ -1015,8 +1014,9 @@ inline void motionEngine() {
     // otherwise, check for DMP data ready interrupt (this should happen frequently)
   } else if (mpuIntStatus & 0x02) {
     // wait for correct available data length, should be a VERY short wait
-    while (mpuFifoCount < packetSize)
+    while (mpuFifoCount < packetSize) {
       mpuFifoCount = mpu.getFIFOCount();
+    }
 
     // read a packet from FIFO
     mpu.getFIFOBytes(fifoBuffer, packetSize);

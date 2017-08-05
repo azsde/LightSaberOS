@@ -159,7 +159,7 @@ static const uint8_t rgbFactor = 255;
  * if BLATSTERMOVEMENTTRIGGER is defined,
  * blaser deflect is triggered by ensuing swings/movements.
  *************************************/
-#define BLASTERCLICKTRIGGER
+//#define BLASTERCLICKTRIGGER
 #ifndef BLASTERCLICKTRIGGER
 #define BLATSTERMOVEMENTTRIGGER
 #endif
