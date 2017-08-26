@@ -36,6 +36,8 @@ extern bool enterMenu;
 #if defined PIXELBLADE
 extern cRGB color;
 extern cRGB currentColor;
+extern cRGB buttonColor;
+extern cRGB crystalColor;
 #endif
 extern uint8_t blaster;
 extern void HumRelaunch();
@@ -113,7 +115,7 @@ void mainClick() {
       #ifdef ACCENT_LED
       accentLEDControl(AL_ON);
       #else if MULTICOLOR_ACCENT_LED
-      accentLEDControl(AL_ON,currentColor);
+      accentLEDControl(AL_ON,buttonColor);
       #endif
     }
     
@@ -152,8 +154,8 @@ void mainClick() {
           #if defined PIXELBLADE
             getColor(storage.sndProfile[storage.soundFont].mainColor);
             lightOn(currentColor);
-            accentLEDControl(AL_ON, currentColor);
-            crystalLEDControl(CL_ON, currentColor);
+            accentLEDControl(AL_ON, buttonColor);
+            crystalLEDControl(CL_ON, crystalColor);
           #endif  // PIXELBLADE
 
       delay(150);
@@ -168,8 +170,8 @@ void mainClick() {
       #ifdef PIXELBLADE
         getColor(storage.sndProfile[storage.soundFont].mainColor);
         lightOn(currentColor);
-        accentLEDControl(AL_ON, currentColor);
-        crystalLEDControl(CL_ON, currentColor);
+        accentLEDControl(AL_ON, buttonColor);
+        crystalLEDControl(CL_ON, crystalColor);
       #endif  // PIXELBLADE
     }
     else if (ConfigModeSubStates == CS_CLASHCOLOR) {
@@ -178,8 +180,8 @@ void mainClick() {
       #ifdef PIXELBLADE
         getColor(storage.sndProfile[storage.soundFont].clashColor);
         lightOn(currentColor);
-        accentLEDControl(AL_ON, currentColor);
-        crystalLEDControl(CL_ON, currentColor);
+        accentLEDControl(AL_ON, buttonColor);
+        crystalLEDControl(CL_ON, crystalColor);
       #endif  // PIXELBLADE
     }
     else if (ConfigModeSubStates == CS_BLASTCOLOR) {
@@ -188,8 +190,8 @@ void mainClick() {
       #ifdef PIXELBLADE
         getColor(storage.sndProfile[storage.soundFont].blasterboltColor);
         lightOn(currentColor);
-        accentLEDControl(AL_ON, currentColor);
-        crystalLEDControl(CL_ON, currentColor);
+        accentLEDControl(AL_ON, buttonColor);
+        crystalLEDControl(CL_ON, crystalColor);
       #endif  // PIXELBLADE
     }
     //modification=0;  // reset config mode change indicator
@@ -260,7 +262,7 @@ void mainDoubleClick() {
       #ifdef ACCENT_LED
       accentLEDControl(AL_ON);
       #else if MULTICOLOR_ACCENT_LED
-      accentLEDControl(AL_ON,currentColor);
+      accentLEDControl(AL_ON,buttonColor);
       #endif
     }
 } else if (SaberState==S_CONFIG) {
@@ -289,7 +291,7 @@ void mainDoubleClick() {
             getColor(storage.sndProfile[storage.soundFont].mainColor);
             #ifdef COLORS
               lightOn(currentColor);
-              accentLEDControl(AL_ON, currentColor);
+              accentLEDControl(AL_ON, buttonColor);
             #else  // not COLORS
               lightOn(currentColor, NUMPIXELS/2, NUMPIXELS-6);
             #endif
@@ -319,8 +321,8 @@ void mainDoubleClick() {
           getColor(storage.sndProfile[storage.soundFont].clashColor);
             #ifdef COLORS
               lightOn(currentColor);
-              accentLEDControl(AL_ON, currentColor);
-              crystalLEDControl(CL_ON, currentColor);
+              accentLEDControl(AL_ON, buttonColor);
+              crystalLEDControl(CL_ON, crystalColor);
             #else  // not COLORS
               lightOn(currentColor, 1, NUMPIXELS/2-1);
             #endif
@@ -337,7 +339,7 @@ void mainDoubleClick() {
           getColor(storage.sndProfile[storage.soundFont].blasterboltColor);
             #ifdef COLORS
               lightOn(currentColor);
-              accentLEDControl(AL_ON, currentColor);
+              accentLEDControl(AL_ON, buttonColor);
               crystalLEDControl(CL_ON, currentColor);
             #else  // not COLORS
               lightOn(currentColor, NUMPIXELS*3/4-5, NUMPIXELS*3/4);

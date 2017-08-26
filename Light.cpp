@@ -54,7 +54,8 @@ static long lastFlicker = millis();
 extern WS2812 pixels;
 
 extern cRGB currentColor;
-
+extern cRGB buttonColor;
+extern cRGB crystalColor;
 /*void pixelblade_KillKey_Enable() {
   // cut power to the neopixels stripes by disconnecting their GND signal using the LS pins
     digitalWrite(3, LOW);
@@ -343,36 +344,56 @@ void getColor(uint8_t color) {
       currentColor.r = 100;
       currentColor.g = 0;
       currentColor.b = 0;
+      buttonColor = currentColor;
+      crystalColor = currentColor;
       break;
     case 1:
       //Green
       currentColor.r = 0;
       currentColor.g = 100;
       currentColor.b = 0;
+      buttonColor = currentColor;
+      crystalColor = currentColor;
       break;
     case 2:
       //Blue
       currentColor.r = 0;
-      currentColor.g = 0;
+      currentColor.g = 30;
       currentColor.b = 100;
+      buttonColor = currentColor;
+      crystalColor = currentColor;
       break;
     case 3:
       //Aqua
       currentColor.r = 0;
       currentColor.g = 100;
-      currentColor.b = 100;
+      currentColor.b = 80;
+      buttonColor.r = 0;
+      buttonColor.g = 80;
+      buttonColor.b = 100;
+      crystalColor = currentColor;
       break;
     case 4:
-      //Blue
-      currentColor.r = 0;
-      currentColor.g = 0;
-      currentColor.b = 100;
+      // Orange
+      currentColor.r = 80;
+      currentColor.g = 65;
+      currentColor.b = 0;
+      buttonColor.r = 55;
+      buttonColor.g = 80;
+      buttonColor.b = 0;
+      crystalColor.r = 100;
+      crystalColor.g = 20;
+      crystalColor.b = 0;
       break;
     case 5:
-      //Fuschia
-      currentColor.r = 100;
+      // Purple
+      currentColor.r = 25;
       currentColor.g = 0;
       currentColor.b = 100;
+      buttonColor = currentColor;
+      crystalColor.r = 50;
+      crystalColor.g = 0;
+      crystalColor.b = 100;
       break;
   }
 } //getColor

@@ -126,6 +126,8 @@ VectorInt16 prevDeltAccel;
 WS2812 pixels(NUMPIXELS);
 cRGB color;
 cRGB currentColor;
+cRGB buttonColor;
+cRGB crystalColor;
 uint8_t blasterPixel;
 bool extraInitDone = false;
 #endif
@@ -485,7 +487,7 @@ void loop() {
 #endif
 
       //Light up the crystal
-      crystalLEDControl(CL_ON, currentColor);
+      crystalLEDControl(CL_ON, crystalColor);
 
       //Play powerons wavs
       SinglePlay_Sound(soundFont.getPowerOn());
@@ -494,7 +496,7 @@ void loop() {
       /*for (uint8_t i = 0; i <= 5; i++) {
         digitalWrite(ledPins[i], HIGH);
       }*/
-      lightIgnition(currentColor, soundFont.getPowerOnTime(), 0);
+      lightIgnition(currentColor, 500, 0);
       //deployBlade(currentColor);
 
 #endif
@@ -511,7 +513,7 @@ void loop() {
   accentLEDControl(AL_ON);
   //digitalWrite(ACCENT_LED, HIGH);
 #else if MULTICOLOR_ACCENT_LED
-  accentLEDControl(AL_ON, currentColor);
+  accentLEDControl(AL_ON, buttonColor);
 #endif
     }
 
@@ -814,7 +816,7 @@ void loop() {
         #ifdef ACCENT_LED
             accentLEDControl(AL_PULSE);
         #else if MULTICOLOR_ACCENT_LED
-            accentLEDControl(AL_PULSE, currentColor);
+            accentLEDControl(AL_PULSE, buttonColor);
         #endif
       }
       // relaunch hum if more than HUM_RELAUNCH time elapsed since entering AS_HUM state
@@ -830,7 +832,7 @@ void loop() {
         #ifdef ACCENT_LED
             accentLEDControl(AL_PULSE);
         #else if MULTICOLOR_ACCENT_LED
-            accentLEDControl(AL_PULSE, currentColor);
+            accentLEDControl(AL_PULSE, buttonColor);
         #endif
       }
     }
@@ -928,7 +930,7 @@ void loop() {
       //ignition = false;
       //blasterBlocks = false;
       modification = 0;
-      crystalLEDControl(CL_OFF, currentColor);
+      crystalLEDControl(CL_OFF, crystalColor);
 #if defined LS_INFO
       Serial.println(F("END ACTION"));
 #endif
@@ -975,7 +977,7 @@ void loop() {
 #ifdef ACCENT_LED
     accentLEDControl(AL_ON);
 #else if MULTICOLOR_ACCENT_LED
-    accentLEDControl(AL_ON, currentColor);
+    accentLEDControl(AL_ON, buttonColor);
 #endif
 
   } // END STANDBY MODE
