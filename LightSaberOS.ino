@@ -443,7 +443,9 @@ void loop() {
    // For some reason if I put this in the setup routine, it messes up everything...
    if (extraInitDone == false) {
     initLedStrip();
+    #ifdef MULTICOLOR_CRYSTAL_LED
     initCrystalLED();
+    #endif
     extraInitDone = true;
    }
 
@@ -487,7 +489,9 @@ void loop() {
 #endif
 
       //Light up the crystal
+      #ifdef MULTICOLOR_CRYSTAL_LED
       crystalLEDControl(CL_ON, crystalColor);
+      #endif
 
       //Play powerons wavs
       SinglePlay_Sound(soundFont.getPowerOn());
@@ -930,7 +934,9 @@ void loop() {
       //ignition = false;
       //blasterBlocks = false;
       modification = 0;
+      #ifdef MULTICOLOR_CRYSTAL_LED
       crystalLEDControl(CL_OFF, crystalColor);
+      #endif
 #if defined LS_INFO
       Serial.println(F("END ACTION"));
 #endif
@@ -1241,6 +1247,7 @@ void initLedStrip() {
   pixels.setOutput(13);
 }
 
+#ifdef MULTICOLOR_CRYSTAL_LED
 void initCrystalLED() {
   #ifdef CRYSTAL_COMMON_ANODE
       pinMode(CRYSTAL_COMMON_ANODE, OUTPUT);
@@ -1250,3 +1257,4 @@ void initCrystalLED() {
       pinMode(BLUE_CRYSTAL_LED, OUTPUT);
   #endif
 }
+#endif

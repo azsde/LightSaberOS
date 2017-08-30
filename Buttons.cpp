@@ -155,7 +155,9 @@ void mainClick() {
             getColor(storage.sndProfile[storage.soundFont].mainColor);
             lightOn(currentColor);
             accentLEDControl(AL_ON, buttonColor);
+            #ifdef MULTICOLOR_CRYSTAL_LED
             crystalLEDControl(CL_ON, crystalColor);
+            #endif
           #endif  // PIXELBLADE
 
       delay(150);
@@ -171,7 +173,9 @@ void mainClick() {
         getColor(storage.sndProfile[storage.soundFont].mainColor);
         lightOn(currentColor);
         accentLEDControl(AL_ON, buttonColor);
+        #ifdef MULTICOLOR_CRYSTAL_LED
         crystalLEDControl(CL_ON, crystalColor);
+        #endif
       #endif  // PIXELBLADE
     }
     else if (ConfigModeSubStates == CS_CLASHCOLOR) {
@@ -181,7 +185,9 @@ void mainClick() {
         getColor(storage.sndProfile[storage.soundFont].clashColor);
         lightOn(currentColor);
         accentLEDControl(AL_ON, buttonColor);
+        #ifdef MULTICOLOR_CRYSTAL_LED
         crystalLEDControl(CL_ON, crystalColor);
+        #endif
       #endif  // PIXELBLADE
     }
     else if (ConfigModeSubStates == CS_BLASTCOLOR) {
@@ -191,7 +197,9 @@ void mainClick() {
         getColor(storage.sndProfile[storage.soundFont].blasterboltColor);
         lightOn(currentColor);
         accentLEDControl(AL_ON, buttonColor);
+        #ifdef MULTICOLOR_CRYSTAL_LED
         crystalLEDControl(CL_ON, crystalColor);
+        #endif
       #endif  // PIXELBLADE
     }
     //modification=0;  // reset config mode change indicator
@@ -322,7 +330,9 @@ void mainDoubleClick() {
             #ifdef COLORS
               lightOn(currentColor);
               accentLEDControl(AL_ON, buttonColor);
+              #ifdef MULTICOLOR_CRYSTAL_LED
               crystalLEDControl(CL_ON, crystalColor);
+              #endif
             #else  // not COLORS
               lightOn(currentColor, 1, NUMPIXELS/2-1);
             #endif
@@ -340,7 +350,9 @@ void mainDoubleClick() {
             #ifdef COLORS
               lightOn(currentColor);
               accentLEDControl(AL_ON, buttonColor);
-              crystalLEDControl(CL_ON, currentColor);
+              #ifdef MULTICOLOR_CRYSTAL_LED
+              crystalLEDControl(CL_ON, crystalColor);
+              #endif
             #else  // not COLORS
               lightOn(currentColor, NUMPIXELS*3/4-5, NUMPIXELS*3/4);
             #endif

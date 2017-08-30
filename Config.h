@@ -195,7 +195,7 @@ static const uint8_t rgbFactor = 255;
  * Enable/disable management of
  * a crystal RGB LED
  *************************************/
-#define MULTICOLOR_CRYSTAL_LED // Not sure it can be enabled / disabled
+#define MULTICOLOR_CRYSTAL_LED // Comment if you don't have a crystal led
 #if defined MULTICOLOR_CRYSTAL_LED
 //#define CRYSTAL_COMMON_ANODE [PICK A NUMBER] // Comment if using common cathode
 #define RED_CRYSTAL_LED  3 //D3
