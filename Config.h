@@ -30,8 +30,8 @@ cRGB C3;  //high meter color
  * Choose which MPU's axis is parallel
  * to your blade axis
  *************************************/
-//#define BLADE_X
-#define BLADE_Y
+#define BLADE_X
+//#define BLADE_Y
 //#define BLADE_Z
 /************************************/
 
